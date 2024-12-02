@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ref, get, set } from 'firebase/database';
-import { database, auth } from '../firebase';
+import { database } from '../firebase';
 
 const ProfileSetup = () => {
   const [fullName, setFullName] = useState('');
@@ -8,69 +8,72 @@ const ProfileSetup = () => {
   const [contactEmail, setContactEmail] = useState('');
   const [contactPhone, setContactPhone] = useState('');
   const [profilePicture, setProfilePicture] = useState('');
-  const [bio, setBio] = useState('');
+  const [dateOfBirth, setDateOfBirth] = useState('');
+  const [address, setAddress] = useState('');
   const [socialLinks, setSocialLinks] = useState({ linkedin: '', twitter: '', instagram: '' });
   const [loading, setLoading] = useState(true);
   const [profileSetupComplete, setProfileSetupComplete] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
-      // Get userUID from localStorage
-      const storedUserUID = localStorage.getItem("userUID");
-
+      const storedUserUID = localStorage.getItem('userUID');
+      
       if (storedUserUID) {
-        // Query the Firebase Realtime Database for the user data using UID
         const userRef = ref(database, 'users/' + storedUserUID);
-        const snapshot = await get(userRef);
 
-        if (snapshot.exists()) {
-          const userData = snapshot.val();
-          const profile = userData.profile || {};
+        try {
+          const snapshot = await get(userRef);
+          if (snapshot.exists()) {
+            const userData = snapshot.val();
+            const profile = userData.profile || {};
 
-          // Set user data to state
-          setFullName(profile.fullName || '');
-          setJobTitle(profile.jobTitle || '');
-          setContactEmail(profile.contactEmail || '');
-          setContactPhone(profile.contactPhone || '');
-          setProfilePicture(profile.profilePicture || '');
-          setBio(profile.bio || '');
-          setSocialLinks(profile.socialLinks || { linkedin: '', twitter: '', instagram: '' });
-          setProfileSetupComplete(userData.profileSetupComplete || false);
-        } else {
-          console.log('No user data found!');
+            setFullName(profile.fullName || '');
+            setJobTitle(profile.jobTitle || '');
+            setContactEmail(profile.contactEmail || '');
+            setContactPhone(profile.contactPhone || '');
+            setProfilePicture(profile.profilePicture || '');
+            setDateOfBirth(profile.dateOfBirth || '');
+            setAddress(profile.address || '');
+            setSocialLinks(profile.socialLinks || { linkedin: '', twitter: '', instagram: '' });
+            setProfileSetupComplete(userData.profileSetupComplete || false);
+          }
+        } catch (error) {
+          console.error('Error fetching data:', error);
         }
-      } else {
-        console.log('No userUID found in localStorage');
       }
-
-      setLoading(false); // Stop loading after data is fetched
+      setLoading(false);
     };
 
     fetchData();
   }, []);
 
   const handleSave = async () => {
-    const storedUserUID = localStorage.getItem("userUID");
+    const storedUserUID = localStorage.getItem('userUID');
 
     if (storedUserUID) {
       const userRef = ref(database, 'users/' + storedUserUID);
-      await set(userRef, {
-        uid: storedUserUID,
-        profileSetupComplete: true,
-        profile: {
-          fullName,
-          jobTitle,
-          contactEmail,
-          contactPhone,
-          profilePicture,
-          bio,
-          socialLinks,
-        },
-      });
 
-      alert('Profile updated successfully!');
-    } else {
-      console.log('No userUID found in localStorage for saving');
+      try {
+        await set(userRef, {
+          uid: storedUserUID,
+          profileSetupComplete: true, // Mark profile setup as complete
+          profile: {
+            fullName,
+            jobTitle,
+            contactEmail,
+            contactPhone,
+            profilePicture,
+            dateOfBirth,
+            address,
+            socialLinks,
+          },
+        });
+        setProfileSetupComplete(true); // Update the state to reflect profile setup completion
+        alert('Profile updated successfully!');
+      } catch (error) {
+        console.error('Error saving data:', error);
+        alert('Failed to update profile. Please try again.');
+      }
     }
   };
 
@@ -81,17 +84,14 @@ const ProfileSetup = () => {
     }));
   };
 
-  if (loading) return <p>Loading...</p>; // Show loading until data is fetched
+  if (loading) return <p>Loading...</p>;
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="w-full flex justify-center mt-10">
       <div className="w-full max-w-3xl p-8 bg-white shadow-lg rounded-lg">
         <h2 className="text-3xl font-semibold text-center mb-6">Setup Your Profile</h2>
 
-        {profileSetupComplete ? (
-          <p>Your profile is already set up!</p>
-        ) : (
-          <div>
+          <form>
             <div className="mb-4">
               <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">Full Name</label>
               <input
@@ -148,12 +148,24 @@ const ProfileSetup = () => {
             </div>
 
             <div className="mb-4">
-              <label htmlFor="bio" className="block text-sm font-medium text-gray-700">Personal Bio</label>
-              <textarea
-                id="bio"
+              <label htmlFor="dateOfBirth" className="block text-sm font-medium text-gray-700">Date of Birth</label>
+              <input
+                id="dateOfBirth"
+                type="date"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg mt-2"
-                value={bio}
-                onChange={(e) => setBio(e.target.value)}
+                value={dateOfBirth}
+                onChange={(e) => setDateOfBirth(e.target.value)}
+              />
+            </div>
+
+            <div className="mb-4">
+              <label htmlFor="address" className="block text-sm font-medium text-gray-700">Address</label>
+              <input
+                id="address"
+                type="text"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg mt-2"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
               />
             </div>
 
@@ -192,13 +204,14 @@ const ProfileSetup = () => {
             </div>
 
             <button
+              type="button"
               onClick={handleSave}
-              className="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600"
+              className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600"
             >
-              Save Changes
+              Save Profile
             </button>
-          </div>
-        )}
+          </form>
+       
       </div>
     </div>
   );

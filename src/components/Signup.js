@@ -30,7 +30,8 @@ const Signup = () => {
           contactEmail: '',
           contactPhone: '',
           profilePicture: '',
-          bio: '',
+          dateOfBirth: '',
+          address:'',
           socialLinks: { linkedin: '', twitter: '', instagram: '' },
         },
       });

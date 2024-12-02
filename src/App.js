@@ -3,9 +3,10 @@ import { BrowserRouter as Router, Routes, Route, Navigate, Link } from "react-ro
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+import Profile from "./components/Profile";
 import Login from "./components/Login";
 import SignUp from "./components/Signup";
-import PersonalBusinessCardDisplay from "./components/PersonalBusinessCardDisplay";
+import DigitalCard from "./components/DigitalCard";
 import { auth } from "./firebase";
 
 function App() {
@@ -15,7 +16,7 @@ function App() {
   useEffect(() => {
     // Try to get the user UID from localStorage
     const storedUserUID = localStorage.getItem("userUID");
-    console.log("Stored User UID from localStorage:", storedUserUID);
+    //console.log("Stored User UID from localStorage:", storedUserUID);
 
     // If there's a stored UID, set the user state
     if (storedUserUID) {
@@ -23,13 +24,13 @@ function App() {
     }
 
     const unsubscribe = auth.onAuthStateChanged((currentUser) => {
-      console.log("Current User:", currentUser);
+      //console.log("Current User:", currentUser);
 
       if (currentUser) {
         // Store only the UID in localStorage when user logs in
         localStorage.setItem("userUID", currentUser.uid);
         setUser({ uid: currentUser.uid, email: currentUser.email }); // Set the user state with UID and email
-        console.log("Stored UID in localStorage:", currentUser.uid);
+        //console.log("Stored UID in localStorage:", currentUser.uid);
       } else {
         // Remove the UID from localStorage when user logs out
         localStorage.removeItem("userUID");
@@ -64,7 +65,9 @@ function App() {
         {/* Header Section */}
         <header className="bg-blue-500 text-white py-4 shadow-md">
           <div className="container mx-auto flex justify-between items-center px-6">
-            <h1 className="text-lg font-bold">Digital Card</h1>
+          <Link to="/DigitalCard" className="text-lg font-bold hover:underline">
+              Digital Card
+            </Link>
             <nav className="flex space-x-4">
               {user ? (
                 <>
@@ -89,14 +92,18 @@ function App() {
         {/* Main Content */}
         <div className="auth-wrapper w-full max-w-md mx-auto p-6 bg-white shadow-md rounded-lg mt-6">
           <div className="auth-inner">
-            <Routes>
+          <Routes>
               <Route
                 path="/"
-                element={user ? <Navigate to="/PersonalBusinessCardDisplay" /> : <Navigate to="/login" />}
+                element={user ? <Navigate to="/DigitalCard" /> : <Navigate to="/login" />}
               />
-              <Route path="/login" element={user ? <Navigate to="/PersonalBusinessCardDisplay" /> : <Login />} />
+              <Route path="/login" element={user ? <Navigate to="/DigitalCard" /> : <Login />} />
               <Route path="/signup" element={<SignUp />} />
-              <Route path="/profile" element={user ? <PersonalBusinessCardDisplay /> : <Navigate to="/login" />} />
+              <Route
+                path="/DigitalCard"
+                element={<DigitalCard userId={localStorage.getItem("userUID")} />}
+              />
+              <Route path="/profile" element={user ? <Profile /> : <Navigate to="/login" />} />
             </Routes>
             <ToastContainer />
           </div>
