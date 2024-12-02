@@ -1,4 +1,3 @@
-// src/App.js
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
@@ -70,11 +69,11 @@ function App() {
               />
               <Route path="/login" element={user ? <Navigate to={`/profile`} /> : <Login />} />
               <Route path="/signup" element={<SignUp />} />
-              
-              {/* Conditionally render DigitalCard based on userUID */}
+
+              {/* DigitalCard Route */}
               <Route
                 path="/DigitalCard/:userUID"
-                element={!user ? <DigitalCard /> : <Navigate to="/profile" />}
+                element={<DigitalCard />} // DigitalCard will access the userUID from the URL
               />
 
               <Route path="/profile" element={user ? <Profile /> : <Navigate to="/login" />} />

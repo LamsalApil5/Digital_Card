@@ -27,6 +27,7 @@ const DigitalCard = () => {
           setProfile(userData.profile || {}); // Set the profile data, if available
         } else {
           console.error('User profile not found');
+          setProfile(null); // Clear profile data if user doesn't exist
         }
       } catch (error) {
         console.error('Error fetching user profile:', error);
@@ -39,11 +40,11 @@ const DigitalCard = () => {
   }, [userUID]); // Re-run effect when userUID changes
 
   if (loading) {
-    return <p>Loading...</p>;
+    return <div className="flex justify-center items-center h-screen text-xl">Loading...</div>;
   }
 
   if (!profile) {
-    return <p>No profile data available.</p>;
+    return <div className="flex justify-center items-center h-screen text-xl">No profile data available.</div>;
   }
 
   const profileURL = `${window.location.origin}/digitalCard/${userUID}`; // Construct profile URL based on the URL parameter
@@ -57,10 +58,10 @@ const DigitalCard = () => {
   };
 
   return (
-    <div className="flex justify-center items-center flex-col">
-      
+    <div className="flex justify-center items-center flex-col py-8 px-4">
+
       {/* Profile Card */}
-      <div className="max-w-sm mx-auto rounded-lg shadow-lg overflow-hidden border-4 border-indigo-500 mb-8">
+      <div className="max-w-sm mx-auto rounded-lg shadow-lg overflow-hidden border-4 border-indigo-500 mb-8 bg-white">
         <div className="flex justify-center mt-4">
           {profile.profilePicture ? (
             <img
@@ -115,7 +116,7 @@ const DigitalCard = () => {
         </div>
       </div>
 
-      {/* QR Button Outside the Card */}
+      {/* QR Code Button */}
       <div className="flex justify-center mb-4">
         <button
           onClick={handleModalOpen}
@@ -130,7 +131,7 @@ const DigitalCard = () => {
         <div className="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg">
             <div className="flex justify-end">
-              <button onClick={handleModalClose} className="text-xl font-bold">X</button>
+              <button onClick={handleModalClose} className="text-xl font-bold text-gray-600">X</button>
             </div>
             <div className="flex justify-center mb-4">
               <QRCodeCanvas value={profileURL} size={256} />
