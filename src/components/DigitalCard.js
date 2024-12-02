@@ -47,20 +47,19 @@ const DigitalCard = () => {
     return <div className="flex justify-center items-center h-screen text-xl">No profile data available.</div>;
   }
 
-  const profileURL = `${window.location.origin}/digitalCard/${userUID}`; // Construct profile URL based on the URL parameter
+  const profileURL = `${window.location.origin}/digitalCard/${userUID}`; 
 
   const handleModalClose = () => {
-    setIsModalOpen(false); // Close the modal
+    setIsModalOpen(false); 
   };
 
   const handleModalOpen = () => {
-    setIsModalOpen(true); // Open the modal
+    setIsModalOpen(true); 
   };
 
   return (
     <div className="flex justify-center items-center flex-col py-8 px-4">
 
-      {/* Profile Card */}
       <div className="max-w-sm mx-auto rounded-lg shadow-lg overflow-hidden border-4 border-indigo-500 mb-8 bg-white">
         <div className="flex justify-center mt-4">
           {profile.profilePicture ? (

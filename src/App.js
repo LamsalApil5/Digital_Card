@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate,useParams } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -9,8 +9,9 @@ import SignUp from "./components/Signup";
 import DigitalCard from "./components/DigitalCard";
 import { auth } from "./firebase";
 import Header from "./components/Header"; // Import the Header component
-
+import ForgotPassword from './components/ForgotPassword';
 function App() {
+  const { userUID } = useParams(); 
   const [user, setUser] = useState(null); // `null` for initial loading state
   const [loading, setLoading] = useState(true); // To track auth state loading
 
@@ -69,13 +70,11 @@ function App() {
               />
               <Route path="/login" element={user ? <Navigate to={`/profile`} /> : <Login />} />
               <Route path="/signup" element={<SignUp />} />
-
-              {/* DigitalCard Route */}
+              <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route
-                path="/DigitalCard/:userUID"
-                element={<DigitalCard />} // DigitalCard will access the userUID from the URL
-              />
-
+  path="/DigitalCard/:userUID"
+  element={<DigitalCard />}  // Make this route public
+/>
               <Route path="/profile" element={user ? <Profile /> : <Navigate to="/login" />} />
             </Routes>
             <ToastContainer />
