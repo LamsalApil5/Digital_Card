@@ -2,23 +2,24 @@ import React, { useState, useEffect } from 'react';
 import { ref, get } from 'firebase/database';
 import { database } from '../firebase'; 
 import { FaLinkedin, FaTwitter, FaInstagram } from 'react-icons/fa'; // FontAwesome icons
-import {QRCodeCanvas} from 'qrcode.react'; // Ensure default import
+import { QRCodeCanvas } from 'qrcode.react'; // Ensure default import
+import { useParams } from 'react-router-dom'; // Import useParams for URL parameters
 
 const DigitalCard = () => {
+  const { userUID } = useParams(); // Get the userUID from the URL
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
 
   useEffect(() => {
     const fetchUserProfile = async () => {
-      const storedUserUID = localStorage.getItem('userUID');
-      if (!storedUserUID) {
-        console.error('No userUID found in local storage');
+      if (!userUID) {
+        console.error('No userUID found in URL');
         setLoading(false);
         return;
       }
 
-      const userRef = ref(database, `users/${storedUserUID}`);
+      const userRef = ref(database, `users/${userUID}`);
       try {
         const snapshot = await get(userRef);
         if (snapshot.exists()) {
@@ -36,7 +37,7 @@ const DigitalCard = () => {
     };
 
     fetchUserProfile();
-  }, []);
+  }, [userUID]); // Re-run effect when userUID changes
 
   if (loading) {
     return <p>Loading...</p>;
@@ -46,7 +47,7 @@ const DigitalCard = () => {
     return <p>No profile data available.</p>;
   }
 
-  const profileURL = `${window.location.origin}/digitalCard/${localStorage.getItem('userUID')}`;
+  const profileURL = `${window.location.origin}/digitalCard/${userUID}`; // Construct profile URL based on the URL parameter
 
   const handleModalClose = () => {
     setIsModalOpen(false); // Close the modal
