@@ -1,5 +1,6 @@
+// src/App.js
 import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -8,6 +9,7 @@ import Login from "./components/Login";
 import SignUp from "./components/Signup";
 import DigitalCard from "./components/DigitalCard";
 import { auth } from "./firebase";
+import Header from "./components/Header"; // Import the Header component
 
 function App() {
   const [user, setUser] = useState(null); // `null` for initial loading state
@@ -55,36 +57,11 @@ function App() {
   return (
     <Router>
       <div className="App bg-gray-100 min-h-screen">
-        {/* Header Section */}
-        <header className="bg-blue-500 text-white py-4 shadow-md">
-          <div className="container mx-auto flex justify-between items-center px-6">
-            <Link to={`/DigitalCard/${user ? user.uid : 'guest'}`} className="text-lg font-bold hover:underline">
-              Digital Card
-            </Link>
-            <nav className="flex space-x-4">
-              {user ? (
-                <>
-                  <Link to={`/DigitalCard/${user.uid}`} className="hover:underline">Card</Link>
-                  <Link to="/profile" className="hover:underline">Profile</Link>
-                  <button
-                    onClick={handleLogout}
-                    className="hover:underline"
-                    >
-                    Logout
-                  </button>
-                    <span>{user.email}</span> {/* Displaying user email */}
-                </>
-              ) : (
-                <>
-                  {/* Add navigation for non-authenticated users (if needed) */}
-                </>
-              )}
-            </nav>
-          </div>
-        </header>
+        {/* Conditionally render Header only if the user is logged in */}
+        {user && <Header user={user} handleLogout={handleLogout} />}
 
         {/* Main Content */}
-        <div className="auth-wrapper w-full max-w-md mx-auto p-6 bg-white shadow-md rounded-lg mt-6">
+        <div className="auth-wrapper w-full max-w-md mx-auto p-6 mt-6">
           <div className="auth-inner">
             <Routes>
               <Route
@@ -93,10 +70,13 @@ function App() {
               />
               <Route path="/login" element={user ? <Navigate to={`/profile`} /> : <Login />} />
               <Route path="/signup" element={<SignUp />} />
+              
+              {/* Conditionally render DigitalCard based on userUID */}
               <Route
                 path="/DigitalCard/:userUID"
-                element={<DigitalCard />}
+                element={!user ? <DigitalCard /> : <Navigate to="/profile" />}
               />
+
               <Route path="/profile" element={user ? <Profile /> : <Navigate to="/login" />} />
             </Routes>
             <ToastContainer />
