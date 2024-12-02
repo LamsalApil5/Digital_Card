@@ -16,26 +16,20 @@ function App() {
   useEffect(() => {
     // Try to get the user UID from localStorage
     const storedUserUID = localStorage.getItem("userUID");
-    //console.log("Stored User UID from localStorage:", storedUserUID);
 
-    // If there's a stored UID, set the user state
     if (storedUserUID) {
       setUser({ uid: storedUserUID });
     }
 
     const unsubscribe = auth.onAuthStateChanged((currentUser) => {
-      //console.log("Current User:", currentUser);
-
       if (currentUser) {
         // Store only the UID in localStorage when user logs in
         localStorage.setItem("userUID", currentUser.uid);
         setUser({ uid: currentUser.uid, email: currentUser.email }); // Set the user state with UID and email
-        //console.log("Stored UID in localStorage:", currentUser.uid);
       } else {
         // Remove the UID from localStorage when user logs out
         localStorage.removeItem("userUID");
         setUser(null); // Set user state to null
-        console.log("Removed UID from localStorage.");
       }
 
       setLoading(false); // Stop showing loading when state is set
@@ -48,7 +42,6 @@ function App() {
     await auth.signOut();
     setUser(null);
     localStorage.removeItem("userUID"); // Ensure we remove the UID from localStorage on logout
-    console.log("User logged out and UID removed from localStorage.");
   };
 
   if (loading) {
@@ -65,7 +58,7 @@ function App() {
         {/* Header Section */}
         <header className="bg-blue-500 text-white py-4 shadow-md">
           <div className="container mx-auto flex justify-between items-center px-6">
-          <Link to="/DigitalCard" className="text-lg font-bold hover:underline">
+            <Link to={`/DigitalCard/${user ? user.uid : 'guest'}`} className="text-lg font-bold hover:underline">
               Digital Card
             </Link>
             <nav className="flex space-x-4">
@@ -92,16 +85,16 @@ function App() {
         {/* Main Content */}
         <div className="auth-wrapper w-full max-w-md mx-auto p-6 bg-white shadow-md rounded-lg mt-6">
           <div className="auth-inner">
-          <Routes>
+            <Routes>
               <Route
                 path="/"
-                element={user ? <Navigate to="/DigitalCard" /> : <Navigate to="/login" />}
+                element={user ? <Navigate to={`/DigitalCard/${user.uid}`} /> : <Navigate to="/login" />}
               />
-              <Route path="/login" element={user ? <Navigate to="/DigitalCard" /> : <Login />} />
+              <Route path="/login" element={user ? <Navigate to={`/DigitalCard/${user.uid}`} /> : <Login />} />
               <Route path="/signup" element={<SignUp />} />
               <Route
-                path="/DigitalCard"
-                element={<DigitalCard userId={localStorage.getItem("userUID")} />}
+                path="/DigitalCard/:userUID"
+                element={<DigitalCard />}
               />
               <Route path="/profile" element={user ? <Profile /> : <Navigate to="/login" />} />
             </Routes>
