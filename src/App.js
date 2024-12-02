@@ -56,12 +56,12 @@ function App() {
 
   return (
     <Router>
-      <div className="App bg-gray-100 min-h-screen">
+      <div className="bg-white min-h-screen">
         {/* Conditionally render Header only if the user is logged in */}
         {user && <Header user={user} handleLogout={handleLogout} />}
 
         {/* Main Content */}
-        <div className="auth-wrapper w-full max-w-md mx-auto p-6 mt-6">
+        <div className="mt-6">
           <div className="auth-inner">
             <Routes>
               <Route
@@ -71,13 +71,22 @@ function App() {
               <Route path="/login" element={user ? <Navigate to={`/profile`} /> : <Login />} />
               <Route path="/signup" element={<SignUp />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
-              <Route
-  path="/DigitalCard/:userUID"
-  element={<DigitalCard />}  // Make this route public
-/>
+            
               <Route path="/profile" element={user ? <Profile /> : <Navigate to="/login" />} />
+
+  <Route path="/digitalCard/:userUID" element={<DigitalCard />} />
             </Routes>
-            <ToastContainer />
+            <ToastContainer
+              position="bottom-right" 
+              autoClose={3000} 
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+            />
           </div>
         </div>
       </div>

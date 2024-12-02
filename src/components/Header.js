@@ -15,7 +15,6 @@ function Header({ user, handleLogout }) {
         <nav className="flex space-x-4">
           {currentUser ? (
             <>
-              <Link to={`/DigitalCard/${currentUser.uid}`} className="hover:underline">Card</Link>
               <Link to="/profile" className="hover:underline">Profile</Link>
               <button
                 onClick={handleLogout}
@@ -23,11 +22,9 @@ function Header({ user, handleLogout }) {
               >
                 Logout
               </button>
-              <span>{currentUser.email}</span> {/* Displaying user email */}
             </>
           ) : (
             <>
-              {/* Add navigation for non-authenticated users (if needed) */}
             </>
           )}
         </nav>
