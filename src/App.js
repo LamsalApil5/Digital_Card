@@ -64,14 +64,15 @@ function App() {
             <nav className="flex space-x-4">
               {user ? (
                 <>
-                  <span>Welcome, {user.email}</span> {/* Displaying user email */}
+                  <Link to={`/DigitalCard/${user.uid}`} className="hover:underline">Card</Link>
                   <Link to="/profile" className="hover:underline">Profile</Link>
                   <button
                     onClick={handleLogout}
                     className="hover:underline"
-                  >
+                    >
                     Logout
                   </button>
+                    <span>{user.email}</span> {/* Displaying user email */}
                 </>
               ) : (
                 <>
@@ -88,9 +89,9 @@ function App() {
             <Routes>
               <Route
                 path="/"
-                element={user ? <Navigate to={`/DigitalCard/${user.uid}`} /> : <Navigate to="/login" />}
+                element={user ? <Navigate to={`/profile`} /> : <Navigate to="/login" />}
               />
-              <Route path="/login" element={user ? <Navigate to={`/DigitalCard/${user.uid}`} /> : <Login />} />
+              <Route path="/login" element={user ? <Navigate to={`/profile`} /> : <Login />} />
               <Route path="/signup" element={<SignUp />} />
               <Route
                 path="/DigitalCard/:userUID"
