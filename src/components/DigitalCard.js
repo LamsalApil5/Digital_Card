@@ -23,8 +23,7 @@ const DigitalCard = () => {
       try {
         const snapshot = await get(userRef);
         if (snapshot.exists()) {
-          const userData = snapshot.val();
-          console.log('User Data:', userData); // Check what data is fetched from Firebase
+          const userData = snapshot.val();         
           setProfile(userData.profile || {}); // Set the profile data, if available
         } else {
           console.error('User profile not found');
@@ -59,6 +58,7 @@ const DigitalCard = () => {
 
   return (
     <div className="flex justify-center items-center flex-col">
+      
       {/* Profile Card */}
       <div className="max-w-sm mx-auto rounded-lg shadow-lg overflow-hidden border-4 border-indigo-500 mb-8">
         <div className="flex justify-center mt-4">
