@@ -61,7 +61,7 @@ function App() {
         {user && <Header user={user} handleLogout={handleLogout} />}
 
         {/* Main Content */}
-        <div className="mt-6">
+        <div className="">
           <div className="auth-inner">
             <Routes>
               <Route

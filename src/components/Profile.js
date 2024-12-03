@@ -177,7 +177,7 @@ const ProfilePage = () => {
       </div>
 
       {/* Profile Setup Section */}
-      <div className="w-full lg:w-1/2 ">
+      <div className="w-full px-32 md:px-16 sm:px-8">
         <h2 className="text-3xl font-semibold text-center mb-6">
           Setup Your Profile
         </h2>
