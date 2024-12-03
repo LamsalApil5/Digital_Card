@@ -69,7 +69,7 @@ const DigitalCard = () => {
 
   return (
     <div className="min-h-screen bg-orange-500 pt-10 pb-20 text-white ">
-      <div className="section relative text-center pt-20 mb-8 w-full max-w-sm mx-auto rounded-lg shadow-lg">
+      <div className="section relative text-center pt-10 mb-8 w-full max-w-sm mx-auto rounded-lg shadow-lg">
         <div
           className="bg-center bg-cover bg-no-repeat pt-5 w-full min-h-[20rem] sm:min-h-[25rem] md:min-h-[30rem]"
           style={{
@@ -81,9 +81,7 @@ const DigitalCard = () => {
 
         {/* Profile Details Section - Left-Aligned */}
         <div
-          className="absolute top-2/4 left-0 w-full p-4 text-white text-left flex flex-col "
-          style={{ height: "calc(100% - 80px)" }}
-        >
+          className="absolute top-2/4 left-0 w-full p-4 text-white text-left flex flex-col " >
           {/* Profile Name and Information */}
           <h1 className="text-3xl font-semibold mb-2">
             {profile.fullName || "Full Name"}
@@ -104,24 +102,31 @@ const DigitalCard = () => {
           <div>
             <ul className="flex space-x-4 justify-start">
               <li>
-                <a href={`tel:${profile.contactPhone}`} className="qr_cc_card">
-                  <FaPhone className="w-6 h-6 text-blue-600" />
+                <a href={`tel:${profile.contactPhone}`} className="btn w-12 h-12 bg-[#3d0fd5] rounded-full flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                </svg>
+                
                 </a>
               </li>
               <li>
                 <a
                   href={`tel:${profile.contactTelphone}`}
-                  className="qr_cc_card"
+                  className="btn w-12 h-12 bg-[#3d0fd5] rounded-full flex items-center justify-center"
                 >
-                  <FaPhoneSquare className="w-6 h-6 text-blue-600" />
+                   <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                </svg>
                 </a>
               </li>
               <li>
                 <a
                   href={`mailto:${profile.contactEmail}`}
-                  className="qr_cc_card"
+                  className="btn w-12 h-12 bg-[#3d0fd5]  rounded-full flex items-center justify-center"
                 >
-                  <FaMailchimp className="w-6 h-6 text-blue-600" />
+                   <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
                 </a>
               </li>
             </ul>
@@ -220,17 +225,20 @@ const DigitalCard = () => {
 
       {isModalOpen && (
         <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg">
-            <button
-              onClick={() => setIsModalOpen(false)}
-              className="absolute top-2 right-2 text-black"
-            >
-              X
-            </button>
-            <QRCodeCanvas value={profileURL} size={200} />
-            <p className="text-center mt-4">Scan to view this profile</p>
-          </div>
+        <div className="bg-white p-6 flex flex-col rounded-lg shadow-lg">
+          {/* Button inside the modal */}
+          <button
+            onClick={() => setIsModalOpen(false)}
+            className="text-xl text-white bg-black rounded-full w-8 h-8 flex items-center justify-center ml-auto mb-4"
+          >
+            X
+          </button>
+          <QRCodeCanvas value={profileURL} size={200} />
+          <p className="text-center mt-4 text-gray-500">Scan to view this profile</p>
         </div>
+      </div>
+      
+      
       )}
     </div>
   );
