@@ -16,10 +16,10 @@ import { auth } from "./firebase";
 import Header from "./components/Header"; // Import the Header component
 import ForgotPassword from "./components/ForgotPassword";
 import Footer from "./components/Footer";
+import AppLoader from "./components/AppLoader";
 function App() {
   const [user, setUser] = useState(null); // `null` for initial loading state
-  const [loading, setLoading] = useState(true); // To track auth state loading
-
+ 
   useEffect(() => {
     // Try to get the user UID from localStorage
     const storedUserUID = localStorage.getItem("userUID");
@@ -39,8 +39,7 @@ function App() {
         setUser(null); // Set user state to null
       }
 
-      setLoading(false); // Stop showing loading when state is set
-    });
+       });
 
     return () => unsubscribe(); // Cleanup subscription on unmount
   }, []);
@@ -53,20 +52,17 @@ function App() {
     localStorage.removeItem("userUID"); // Ensure we remove the UID from localStorage on logout
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen bg-gray-100">
-        <p>Loading...</p>
-      </div>
-    );
-  }
+ 
 
   return (
+    
     <Router>
       <div className="bg-white min-h-screen">
         {/* Conditionally render Header only if the user is logged in */}
         {user && <Header user={user} handleLogout={handleLogout} />}
-
+        <div>
+      <AppLoader />
+    </div>
         {/* Main Content */}
         <div className="">
           <div className="auth-inner">

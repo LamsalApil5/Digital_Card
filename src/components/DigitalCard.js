@@ -242,7 +242,9 @@ const DigitalCard = () => {
       <div class="bg-white rounded-lg shadow-lg p-6 mb-4 max-w-sm mx-auto">
         <h2 class="text-xl mb-4 text-black text-center font-bold">Web Links</h2>
         <a
-          href="https://www.google.com/maps"
+          href={`https://www.google.com/maps?q=${profile.googleMap.lat},${profile.googleMap.lon}`}
+          target="_blank"
+          rel="noreferrer noopener"
           class="flex items-center justify-between p-2 hover:bg-gray-50 rounded"
         >
           <div class="flex items-center gap-3 text-black">
@@ -262,7 +264,9 @@ const DigitalCard = () => {
             </svg>
             <div>
               <p class="font-medium text-black">Multi Dynamic</p>
-              <p class="text-sm text-gray-700">{profile.address}</p>
+              <p class="text-sm text-gray-700">
+                {profile.googleMap.display_name}
+              </p>
             </div>
           </div>
           <svg
@@ -281,6 +285,7 @@ const DigitalCard = () => {
           </svg>
         </a>
       </div>
+
       <div className="fixed bottom-6 left-10 z-50 pb-5 max-w-7xl mx-auto flex justify-between w-full md:w-auto">
         {/* QR Code Button */}
         <button

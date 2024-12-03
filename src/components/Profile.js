@@ -24,8 +24,43 @@ const ProfilePage = () => {
     website: "",
     reaProfile: "",
   });
-  const [loading, setLoading] = useState(true);
   const [profileSetupComplete, setProfileSetupComplete] = useState(false);
+  const [searchResults, setSearchResults] = useState([]); // Store search results for dropdown
+  const [locationData, setLocationData] = useState(null); // Store full JSON data for selected location
+
+  // Handle search and update dropdown based on input
+  const handleSearch = (searchValue) => {
+    setGoogleMap(searchValue); // Update the input value in the state
+
+    // If there's no search value or it's just spaces, do nothing
+    if (!searchValue.trim()) {
+      setSearchResults([]);
+      return;
+    }
+
+    fetch(
+      `https://nominatim.openstreetmap.org/search?format=json&q=${searchValue}`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.length > 0) {
+          setSearchResults(data); // Populate dropdown with results
+        } else {
+          setSearchResults([]); // Clear dropdown if no results
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching location data:", error);
+        setSearchResults([]); // Clear dropdown on error
+      });
+  };
+
+  // Handle selection from dropdown
+  const handleSelectLocation = (location) => {
+    setGoogleMap(location.display_name); // Set the input field with the selected address (name)
+    setLocationData(location); // Store the full JSON data for the selected location
+    setSearchResults([]); // Clear dropdown after selection
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -46,7 +81,7 @@ const ProfilePage = () => {
             setContactPhone(profile.contactPhone || "");
             setContactTelphone(profile.contactTelphone || "");
             setProfilePicture(profile.profilePicture || "");
-            setGoogleMap(profile.googleMap || "");
+            setGoogleMap(profile.googleMap.display_name || "");
             setDateOfBirth(profile.dateOfBirth || "");
             setAddress(profile.address || "");
             setSocialLinks(
@@ -67,7 +102,6 @@ const ProfilePage = () => {
           console.error("Error fetching data:", error);
         }
       }
-      setLoading(false);
     };
 
     fetchData();
@@ -86,9 +120,8 @@ const ProfilePage = () => {
         const userData = snapshot.val();
 
         if (userData) {
-
           await set(userRef, {
-            email: userData.email, 
+            email: userData.email,
             uid: storedUserUID,
             createdAt: userData.createdAt,
             profileSetupComplete: true,
@@ -99,7 +132,7 @@ const ProfilePage = () => {
               contactPhone,
               contactTelphone,
               profilePicture,
-              googleMap,
+              googleMap: locationData,
               dateOfBirth,
               address,
               socialLinks,
@@ -137,8 +170,6 @@ const ProfilePage = () => {
       reader.readAsDataURL(file);
     }
   };
-
-  if (loading) return <p>Loading...</p>;
 
   //const profileURL = `${window.location.origin}/digitalCard/${localStorage.getItem('userUID')}`;
 
@@ -312,22 +343,6 @@ const ProfilePage = () => {
               />
             </div>
 
-            {/* Address */}
-            <div className="mb-4">
-              <label
-                htmlFor="googleMap"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Location
-              </label>
-              <input
-                id="googleMap"
-                type="text"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg mt-2"
-                value={googleMap}
-                onChange={(e) => setGoogleMap(e.target.value)}
-              />
-            </div>
             {/* Date of Birth */}
             <div className="mb-4">
               <label
@@ -359,6 +374,39 @@ const ProfilePage = () => {
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
               />
+            </div>
+
+            <div className="mb-4">
+              {/* Input Field */}
+              <label
+                htmlFor="googleMap"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Location
+              </label>
+              <input
+                id="googleMap"
+                type="text"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg mt-2"
+                value={googleMap} // Show selected name in the input field
+                onChange={(e) => handleSearch(e.target.value)} // Update search as user types
+                placeholder="Search for a location"
+              />
+
+              {/* Dropdown for search results */}
+              {searchResults.length > 0 && (
+                <ul className="absolute mt-1 sm:w-56 md:w-96 bg-white border border-gray-300 rounded-lg shadow-lg z-10">
+                  {searchResults.map((location, index) => (
+                    <li
+                      key={index}
+                      className="px-3 py-2 text-sm sm:text-base hover:bg-gray-100 cursor-pointer"
+                      onClick={() => handleSelectLocation(location)} // Select the location
+                    >
+                      {location.display_name} {/* Show the address */}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           </div>
           {/* Social Media Links */}
