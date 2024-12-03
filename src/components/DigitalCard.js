@@ -50,19 +50,22 @@ const DigitalCard = () => {
   }
   const saveContact = () => {
     // Check if at least one phone number exists
-    if (profile.contactPhone || profile.contactPhoneWork || profile.fullName) {
+    if (profile.contactPhone || profile.contactTelphone || profile.fullName) {
       // Create the vCard content (VCF format)
       let vCardData = `BEGIN:VCARD
   VERSION:3.0
-  FN:${profile.contactName}
+  FN:${profile.fullName}
   `;
 
       // Add phone numbers to the vCard (if available)
+      if (profile.contactName) {
+        vCardData += `TEL;TYPE=NAME:${profile.fullName}\n`; // Mobile number
+      }
       if (profile.contactPhone) {
-        vCardData += `TEL;TYPE=CELL:${profile.contactPhone}\n`; // Mobile number
+        vCardData += `TEL;TYPE=WORK:${profile.contactPhone}\n`; // Mobile number
       }
       if (profile.contactTelphone) {
-        vCardData += `TEL;TYPE=WORK:${profile.contactTelphone}\n`; // Work number
+        vCardData += `TEL;TYPE=HOME:${profile.contactTelphone}\n`; // Work number
       }
 
       vCardData += `END:VCARD`;
@@ -297,8 +300,8 @@ const DigitalCard = () => {
       </div>
 
       <div className="fixed bottom-6 right-10 z-50 pb-5 max-w-7xl mx-auto flex  items-start justify-end w-full space-x-2">
-        <div className=" text-green-600 rounded-full flex items-start px-2 py-1 space-x-2 group">
-          <span className="text-sm font-medium flex items-start justify-center py-1 px-2 rounded-full bg-white text-transparent group-hover:text-orange-600 group-hover:bg-white transition-all duration-300 transform group-hover:scale-100 opacity-0 group-hover:opacity-100">
+        <div className=" text-green-600 rounded-full flex items-center space-x-2 group">
+          <span className="text-sm font-medium flex items-center justify-center py-1 px-2 rounded-full bg-white text-transparent group-hover:text-orange-600 group-hover:bg-white transition-all duration-300 transform group-hover:scale-100 opacity-0 group-hover:opacity-100">
             Save Contact
           </span>
           <button
