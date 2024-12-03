@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { ref, get } from "firebase/database";
 import { database } from "../firebase";
-import {
-  FaPhoneSquare,
-  FaQrcode,
-} from "react-icons/fa";
+import { FaPhoneSquare, FaQrcode } from "react-icons/fa";
 import { QRCodeCanvas } from "qrcode.react";
+import { FaSave } from "react-icons/fa";
 import { useParams } from "react-router-dom";
 import manImage from "../man.png";
 import companyLogo from "../companylogo.png";
@@ -15,7 +13,7 @@ const DigitalCard = () => {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [isSaved, setIsSaved] = useState(false);
   useEffect(() => {
     const fetchUserProfile = async () => {
       if (!userUID) {
@@ -50,6 +48,49 @@ const DigitalCard = () => {
       </div>
     );
   }
+  const saveContact = () => {
+    // Check if at least one phone number exists
+    if (profile.contactPhone || profile.contactPhoneWork || profile.fullName) {
+      // Create the vCard content (VCF format)
+      let vCardData = `BEGIN:VCARD
+  VERSION:3.0
+  FN:${profile.contactName}
+  `;
+
+      // Add phone numbers to the vCard (if available)
+      if (profile.contactPhone) {
+        vCardData += `TEL;TYPE=CELL:${profile.contactPhone}\n`; // Mobile number
+      }
+      if (profile.contactTelphone) {
+        vCardData += `TEL;TYPE=WORK:${profile.contactTelphone}\n`; // Work number
+      }
+
+      vCardData += `END:VCARD`;
+
+      // Create a Blob with the vCard data and specify the MIME type as vCard
+      const blob = new Blob([vCardData], { type: "text/vcard" });
+
+      // Create an anchor element to trigger the download
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+
+      link.download = `${profile.fullName || "contact"}.vcf`;
+      link.click();
+
+      navigator.clipboard
+        .writeText(profile.contactPhone)
+        .then(() => {
+          setIsSaved(true);
+          setTimeout(() => setIsSaved(false), 2000);
+        })
+        .catch((error) => {
+          console.error("Error copying to clipboard: ", error);
+          alert("Failed to save contact. Please try again.");
+        });
+    } else {
+      alert("At least one phone number is required.");
+    }
+  };
 
   if (!profile) {
     return (
@@ -66,16 +107,14 @@ const DigitalCard = () => {
         <div
           className="bg-center bg-cover bg-no-repeat pt-5 w-full min-h-[20rem] sm:min-h-[25rem] md:min-h-[30rem]"
           style={{
-            backgroundImage: `url(${profile.profilePicture || manImage})`,            
-            
+            backgroundImage: `url(${profile.profilePicture || manImage})`,
           }}
         >
           <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-orange-500 via-transparent to-transparent rounded-lg"></div>
         </div>
 
         {/* Profile Details Section - Left-Aligned */}
-        <div
-          className="absolute top-1/4 sm:top-1/3 md:top-2/4 left-0 w-full p-4 text-white text-left flex flex-col " >
+        <div className="absolute top-1/4 sm:top-1/3 md:top-2/4 left-0 w-full p-4 text-white text-left flex flex-col ">
           {/* Profile Name and Information */}
           <h1 className="text-3xl font-semibold mb-2">
             {profile.fullName || "Full Name"}
@@ -96,11 +135,24 @@ const DigitalCard = () => {
           <div>
             <ul className="flex space-x-4 justify-start">
               <li>
-                <a href={`tel:${profile.contactPhone}`} className="btn w-12 h-12 bg-[#3d0fd5] rounded-full flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                </svg>
-                
+                <a
+                  href={`tel:${profile.contactPhone}`}
+                  className="btn w-12 h-12 bg-[#3d0fd5] rounded-full flex items-center justify-center"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6 text-white"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"
+                    />
+                  </svg>
                 </a>
               </li>
               <li>
@@ -108,9 +160,20 @@ const DigitalCard = () => {
                   href={`tel:${profile.contactTelphone}`}
                   className="btn w-12 h-12 bg-[#3d0fd5] rounded-full flex items-center justify-center"
                 >
-                   <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                </svg>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6 text-white"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                    />
+                  </svg>
                 </a>
               </li>
               <li>
@@ -118,9 +181,20 @@ const DigitalCard = () => {
                   href={`mailto:${profile.contactEmail}`}
                   className="btn w-12 h-12 bg-[#3d0fd5]  rounded-full flex items-center justify-center"
                 >
-                   <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6 text-white"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                    />
+                  </svg>
                 </a>
               </li>
             </ul>
@@ -207,32 +281,56 @@ const DigitalCard = () => {
           </svg>
         </a>
       </div>
-      <div className="fixed bottom-6 left-10 z-50 pb-5 max-w-7xl mx-auto">
+      <div className="fixed bottom-6 left-10 z-50 pb-5 max-w-7xl mx-auto flex justify-between w-full md:w-auto">
         {/* QR Code Button */}
         <button
           onClick={() => setIsModalOpen(true)}
-          className="bg-white text-orange-600 rounded-full w-12 h-12 flex items-center justify-center hover:bg-gray-100"
+          className="bg-white text-orange-600 rounded-full w-12 h-12 flex items-center justify-center hover:bg-gray-100 mb-4 sm:mb-0"
         >
-          <FaQrcode className="w-6 h-6" />{" "}
+          <FaQrcode className="w-6 h-6" />
         </button>
       </div>
 
+
+      <div className="fixed bottom-6 right-10 z-50 pb-5 max-w-7xl mx-auto flex justify-center w-full md:w-auto items-center space-x-2">
+  {/* Save Contact Label and Button */}
+  <div className=" text-green-600 rounded-full flex items-center px-2 py-1 space-x-2 group">
+    {/* Save Contact Text with smaller size and same background as button */}
+    <span className="text-sm font-medium flex items-center justify-center py-1 px-2 rounded-full bg-white text-transparent group-hover:text-orange-600 group-hover:bg-white transition-all duration-300 transform group-hover:scale-100 opacity-0 group-hover:opacity-100">
+      Save Contact
+    </span>
+    {/* Save Button */}
+    <button
+      onClick={saveContact}
+      className="bg-white text-orange-600 rounded-full w-12 h-12 flex items-center justify-center hover:bg-gray-100"
+    >
+      {isSaved ? (
+        <FaSave className="w-6 h-6 text-blue-500" />
+      ) : (
+        <FaSave className="w-6 h-6" />
+      )}
+    </button>
+  </div>
+</div>
+
+
+
       {isModalOpen && (
         <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
-        <div className="bg-white p-6 flex flex-col rounded-lg shadow-lg">
-          {/* Button inside the modal */}
-          <button
-            onClick={() => setIsModalOpen(false)}
-            className="text-xl text-white bg-black rounded-full w-8 h-8 flex items-center justify-center ml-auto mb-4"
-          >
-            X
-          </button>
-          <QRCodeCanvas value={profileURL} size={200} />
-          <p className="text-center mt-4 text-gray-500">Scan to view this profile</p>
+          <div className="bg-white p-6 flex flex-col rounded-lg shadow-lg">
+            {/* Button inside the modal */}
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="text-xl text-white bg-black rounded-full w-8 h-8 flex items-center justify-center ml-auto mb-4"
+            >
+              X
+            </button>
+            <QRCodeCanvas value={profileURL} size={200} />
+            <p className="text-center mt-4 text-gray-500">
+              Scan to view this profile
+            </p>
+          </div>
         </div>
-      </div>
-      
-      
       )}
     </div>
   );
