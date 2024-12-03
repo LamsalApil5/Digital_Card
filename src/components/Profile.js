@@ -199,6 +199,7 @@ const ProfilePage = () => {
         </h2>
         <form>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            
             {/* Full Name */}
             <div className="mb-4">
               <label
@@ -214,6 +215,23 @@ const ProfilePage = () => {
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
               />
+            </div>
+             {/* Profile Picture */}
+             <div className="mb-4">
+              <label
+                htmlFor="profilePicture"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Profile Picture
+              </label>
+              <input
+                id="profilePicture"
+                type="file"
+                accept="image/*"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg mt-2"
+                onChange={handleFileChange}
+              />
+             
             </div>
             {/* Job Title */}
             <div className="mb-4">
@@ -280,31 +298,7 @@ const ProfilePage = () => {
               />
             </div>
 
-            {/* Profile Picture */}
-            <div className="mb-4">
-              <label
-                htmlFor="profilePicture"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Profile Picture
-              </label>
-              <input
-                id="profilePicture"
-                type="file"
-                accept="image/*"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg mt-2"
-                onChange={handleFileChange}
-              />
-              {profilePicture && (
-                <div className="mt-4">
-                  <img
-                    src={profilePicture}
-                    alt="Profile"
-                    className="w-24 h-24 rounded-full object-cover"
-                  />
-                </div>
-              )}
-            </div>
+           
              {/* Address */}
              <div className="mb-4">
               <label
@@ -465,8 +459,10 @@ const ProfilePage = () => {
                     handleSocialLinkChange("website", e.target.value)
                   }
                 />
+              
+              </div>
                 {/* reaProfile */}
-              <div className="mb-4">
+                <div className="mb-4">
                 <label
                   htmlFor="reaProfile"
                   className="block text-sm font-medium text-gray-700"
@@ -483,7 +479,6 @@ const ProfilePage = () => {
                   }
                 />
                </div>
-              </div>
             </div>
           </div>
           <button

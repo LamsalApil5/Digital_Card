@@ -68,10 +68,10 @@ const DigitalCard = () => {
   const profileURL = `${window.location.origin}/digitalCard/${userUID}`;
 
   return (
-    <div className="min-h-screen bg-orange-500 text-white ">
-      <div className="section relative text-center mb-8 w-full max-w-sm mx-auto shadow-lg">
+    <div className="min-h-screen bg-orange-500 pt-10 pb-20 text-white ">
+      <div className="section relative text-center pt-20 mb-8 w-full max-w-sm mx-auto rounded-lg shadow-lg">
         <div
-          className="bg-center bg-cover bg-no-repeat w-full min-h-[20rem] sm:min-h-[25rem] md:min-h-[30rem]"
+          className="bg-center bg-cover bg-no-repeat pt-5 w-full min-h-[20rem] sm:min-h-[25rem] md:min-h-[30rem]"
           style={{
             backgroundImage: `url(${profile.profilePicture || manImage})`,
           }}
@@ -128,24 +128,93 @@ const DigitalCard = () => {
           </div>
         </div>
       </div>
+      <div class="bg-white rounded-lg shadow-lg p-6 mb-4 max-w-sm mx-auto">
+        <div class="flex items-center gap-4 mb-6">
+          <FaPhoneSquare className="w-6 h-6 text-black" />
+          <span class="text-lg  text-black">Contact Me</span>
+        </div>
 
-      <div className="flex justify-between items-center mt-6 max-w-7xl mx-auto">
+        <div class="space-y-6">
+          <div>
+            <h3 class="text-black mb-1">Call Me</h3>
+            <p class="text-gray-700">{profile.contactPhone}</p>
+          </div>
+          <div>
+            <h3 class="text-black mb-1">Email</h3>
+            <p class="text-gray-700">{profile.contactEmail}</p>
+          </div>
+          <div>
+            <h3 class="text-black mb-1">Address</h3>
+            <p class="text-gray-700">{profile.address}</p>
+          </div>
+          <button class="bg-[#ad6c26] text-white px-4 py-2 rounded flex items-center gap-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"
+              />
+            </svg>
+            Direction
+          </button>
+        </div>
+      </div>
+      <div class="bg-white rounded-lg shadow-lg p-6 mb-4 max-w-sm mx-auto">
+        <h2 class="text-xl font-semibold mb-4 text-black">Web Links</h2>
+        <a
+          href="https://www.google.com/maps"
+          class="flex items-center justify-between p-2 hover:bg-gray-50 rounded"
+        >
+          <div class="flex items-center gap-3 text-black">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+              />
+            </svg>
+            <div>
+              <p class="font-medium text-black">Multi Dynamic</p>
+              <p class="text-sm text-gray-700">{profile.address}</p>
+            </div>
+          </div>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5 text-gray-400"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 5l7 7-7 7"
+            />
+          </svg>
+        </a>
+      </div>
+      <div className="fixed bottom-6 left-10 z-50 pb-5 max-w-7xl mx-auto">
         {/* QR Code Button */}
         <button
           onClick={() => setIsModalOpen(true)}
           className="bg-white text-orange-600 rounded-full w-12 h-12 flex items-center justify-center hover:bg-gray-100"
         >
-          <FaQrcode className="w-6 h-6" />
-        </button>
-
-        {/* Copy Link Button */}
-        <button
-          onClick={() =>
-            navigator.clipboard.writeText(profile.link || "default link")
-          }
-          className="bg-white text-orange-600 rounded-full w-12 h-12 flex items-center justify-center hover:bg-gray-100"
-        >
-          <FaLink className="w-6 h-6" />
+          <FaQrcode className="w-6 h-6" />{" "}
         </button>
       </div>
 
