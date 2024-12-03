@@ -2,14 +2,8 @@ import React, { useState, useEffect } from "react";
 import { ref, get } from "firebase/database";
 import { database } from "../firebase";
 import {
-  FaLinkedin,
-  FaTwitter,
-  FaInstagram,
-  FaPhone,
   FaPhoneSquare,
-  FaMailchimp,
   FaQrcode,
-  FaLink,
 } from "react-icons/fa";
 import { QRCodeCanvas } from "qrcode.react";
 import { useParams } from "react-router-dom";

@@ -7,8 +7,6 @@ import { toast } from 'react-toastify';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
-  const [error, setError] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
   const navigate = useNavigate();
 
   const handleForgotPassword = async () => {
@@ -35,7 +33,6 @@ const ForgotPassword = () => {
 
       if (!emailExists) {
         toast.error('This email address is not registered.');
-        setSuccessMessage('');
         return;
       }
 

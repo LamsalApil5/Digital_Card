@@ -7,7 +7,6 @@ import { toast } from 'react-toastify';
 const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleSignup = async () => {
