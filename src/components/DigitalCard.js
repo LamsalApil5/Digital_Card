@@ -64,7 +64,6 @@ const DigitalCard = () => {
       </div>
     );
   }
-
   const profileURL = `${window.location.origin}/digitalCard/${userUID}`;
 
   return (
@@ -73,7 +72,8 @@ const DigitalCard = () => {
         <div
           className="bg-center bg-cover bg-no-repeat pt-5 w-full min-h-[20rem] sm:min-h-[25rem] md:min-h-[30rem]"
           style={{
-            backgroundImage: `url(${profile.profilePicture || manImage})`,
+            backgroundImage: `url(${profile.profilePicture || manImage})`,            
+            
           }}
         >
           <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-orange-500 via-transparent to-transparent rounded-lg"></div>
@@ -172,7 +172,7 @@ const DigitalCard = () => {
         </div>
       </div>
       <div class="bg-white rounded-lg shadow-lg p-6 mb-4 max-w-sm mx-auto">
-        <h2 class="text-xl font-semibold mb-4 text-black">Web Links</h2>
+        <h2 class="text-xl mb-4 text-black text-center font-bold">Web Links</h2>
         <a
           href="https://www.google.com/maps"
           class="flex items-center justify-between p-2 hover:bg-gray-50 rounded"

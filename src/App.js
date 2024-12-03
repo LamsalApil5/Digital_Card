@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate,useParams } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  useParams,
+} from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -9,10 +15,9 @@ import SignUp from "./components/Signup";
 import DigitalCard from "./components/DigitalCard";
 import { auth } from "./firebase";
 import Header from "./components/Header"; // Import the Header component
-import ForgotPassword from './components/ForgotPassword';
-import Footer from './components/Footer';
+import ForgotPassword from "./components/ForgotPassword";
+import Footer from "./components/Footer";
 function App() {
-  const { userUID } = useParams(); 
   const [user, setUser] = useState(null); // `null` for initial loading state
   const [loading, setLoading] = useState(true); // To track auth state loading
 
@@ -41,6 +46,8 @@ function App() {
     return () => unsubscribe(); // Cleanup subscription on unmount
   }, []);
 
+  
+
   const handleLogout = async () => {
     await auth.signOut();
     setUser(null);
@@ -67,19 +74,27 @@ function App() {
             <Routes>
               <Route
                 path="/"
-                element={user ? <Navigate to={`/profile`} /> : <Navigate to="/login" />}
+                element={
+                  user ? <Navigate to={`/profile`} /> : <Navigate to="/login" />
+                }
               />
-              <Route path="/login" element={user ? <Navigate to={`/profile`} /> : <Login />} />
+              <Route
+                path="/login"
+                element={user ? <Navigate to={`/profile`} /> : <Login />}
+              />
               <Route path="/signup" element={<SignUp />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
-            
-              <Route path="/profile" element={user ? <Profile /> : <Navigate to="/login" />} />
 
-  <Route path="/digitalCard/:userUID" element={<DigitalCard />} />
+              <Route
+                path="/profile"
+                element={user ? <Profile /> : <Navigate to="/login" />}
+              />
+
+              <Route path="/digitalCard/:userUID" element={<DigitalCard />} />
             </Routes>
             <ToastContainer
-              position="bottom-right" 
-              autoClose={3000} 
+              position="bottom-right"
+              autoClose={3000}
               hideProgressBar={false}
               newestOnTop={false}
               closeOnClick
@@ -90,8 +105,8 @@ function App() {
             />
           </div>
         </div>
-         {/* Add Footer */}
-         {user &&<Footer />}
+        {/* Add Footer */}
+        {user && <Footer />}
       </div>
     </Router>
   );
