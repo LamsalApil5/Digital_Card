@@ -127,7 +127,7 @@ const ProfilePage = () => {
   //const profileURL = `${window.location.origin}/digitalCard/${localStorage.getItem('userUID')}`;
 
   return (
-    <div className="flex flex-wrap justify-center gap-8 mt-10">
+    <div className="flex flex-wrap justify-center gap-8 mt-10 pb-10">
       {/* Digital Card Section */}
       <div className="w-full p-8">
         <div className="flex flex-col items-center">
@@ -177,7 +177,7 @@ const ProfilePage = () => {
             {/* Preview Button */}
             <button
               onClick={() => {
-                const userId = localStorage.getItem("userUID")
+                const userId = localStorage.getItem("userUID");
                 if (userId) {
                   window.open(`/digitalCard/${userId}`, "_blank");
                 } else {
@@ -199,7 +199,6 @@ const ProfilePage = () => {
         </h2>
         <form>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            
             {/* Full Name */}
             <div className="mb-4">
               <label
@@ -216,8 +215,8 @@ const ProfilePage = () => {
                 onChange={(e) => setFullName(e.target.value)}
               />
             </div>
-             {/* Profile Picture */}
-             <div className="mb-4">
+            {/* Profile Picture */}
+            <div className="mb-4">
               <label
                 htmlFor="profilePicture"
                 className="block text-sm font-medium text-gray-700"
@@ -231,7 +230,6 @@ const ProfilePage = () => {
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg mt-2"
                 onChange={handleFileChange}
               />
-             
             </div>
             {/* Job Title */}
             <div className="mb-4">
@@ -298,9 +296,8 @@ const ProfilePage = () => {
               />
             </div>
 
-           
-             {/* Address */}
-             <div className="mb-4">
+            {/* Address */}
+            <div className="mb-4">
               <label
                 htmlFor="googleMap"
                 className="block text-sm font-medium text-gray-700"
@@ -459,10 +456,9 @@ const ProfilePage = () => {
                     handleSocialLinkChange("website", e.target.value)
                   }
                 />
-              
               </div>
-                {/* reaProfile */}
-                <div className="mb-4">
+              {/* reaProfile */}
+              <div className="mb-4">
                 <label
                   htmlFor="reaProfile"
                   className="block text-sm font-medium text-gray-700"
@@ -478,16 +474,18 @@ const ProfilePage = () => {
                     handleSocialLinkChange("website", e.target.value)
                   }
                 />
-               </div>
+              </div>
             </div>
           </div>
-          <button
-            type="button"
-            onClick={handleSave}
-            className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-700 mt-6"
-          >
-            Save Profile
-          </button>
+          <div className="flex items-center justify-center">
+            <button
+              type="button"
+              onClick={handleSave}
+              className="bg-blue-500 text-white py-1 px-3 rounded-lg hover:bg-blue-700"
+            >
+              Save Profile
+            </button>
+          </div>
         </form>
       </div>
     </div>

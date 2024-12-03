@@ -10,6 +10,7 @@ import DigitalCard from "./components/DigitalCard";
 import { auth } from "./firebase";
 import Header from "./components/Header"; // Import the Header component
 import ForgotPassword from './components/ForgotPassword';
+import Footer from './components/Footer';
 function App() {
   const { userUID } = useParams(); 
   const [user, setUser] = useState(null); // `null` for initial loading state
@@ -89,6 +90,8 @@ function App() {
             />
           </div>
         </div>
+         {/* Add Footer */}
+         {user &&<Footer />}
       </div>
     </Router>
   );
