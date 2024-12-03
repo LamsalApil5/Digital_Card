@@ -2,17 +2,17 @@ import React, { useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false); // To track loading state
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async () => {
     if (!email || !password) {
-      setError('Please fill in both fields.');
+      toast.error('Please fill in email and password fields.');
       return;
     }
 
@@ -20,10 +20,11 @@ const Login = () => {
     try {
       // Sign in the user with email and password
       await signInWithEmailAndPassword(auth, email, password);
+      toast.success('Login successful!');
       // Navigate to the profile page upon successful login
       navigate('/profile');
     } catch (error) {
-      setError('Invalid credentials'); // Set error message if login fails
+      toast.error('Invalid email or password.');
     } finally {
       setIsLoading(false); // Stop loading after the login attempt
     }
@@ -55,7 +56,6 @@ const Login = () => {
             placeholder="Enter your password"
           />
         </div>
-        {error && <p className="text-red-500 text-sm">{error}</p>}
         <button
           onClick={handleLogin}
           className="w-full bg-blue-500 text-white py-2 rounded-lg mt-4 hover:bg-blue-600 disabled:opacity-50"

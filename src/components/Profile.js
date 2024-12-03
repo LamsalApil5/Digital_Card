@@ -78,29 +78,45 @@ const ProfilePage = () => {
 
     if (storedUserUID) {
       const userRef = ref(database, "users/" + storedUserUID);
+      console.log(userRef);
 
       try {
-        await set(userRef, {
-          uid: storedUserUID,
-          profileSetupComplete: true,
-          profile: {
-            fullName,
-            jobTitle,
-            contactEmail,
-            contactPhone,
-            contactTelphone,
-            profilePicture,
-            googleMap,
-            dateOfBirth,
-            address,
-            socialLinks,
-          },
-        });
-        setProfileSetupComplete(true);
-        toast.success("Profile updated successfully!");
+        // Get the current user data to fetch the email
+        const snapshot = await get(userRef);
+        const userData = snapshot.val();
+
+        if (userData) {
+
+          await set(userRef, {
+            email: userData.email, 
+            uid: storedUserUID,
+            createdAt: userData.createdAt,
+            profileSetupComplete: true,
+            profile: {
+              fullName,
+              jobTitle,
+              contactEmail,
+              contactPhone,
+              contactTelphone,
+              profilePicture,
+              googleMap,
+              dateOfBirth,
+              address,
+              socialLinks,
+            },
+          });
+
+          setProfileSetupComplete(true);
+          toast.success("Profile updated successfully!");
+        } else {
+          toast.error("User not found. Please log in again.");
+        }
       } catch (error) {
         toast.error("Failed to update profile. Please try again.");
+        console.error("Error updating profile:", error);
       }
+    } else {
+      toast.error("User not logged in. Please log in first.");
     }
   };
 

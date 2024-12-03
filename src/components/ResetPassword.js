@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getAuth, confirmPasswordReset } from 'firebase/auth';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+// Initialize toast notifications
+toast.configure();
 
 const ResetPassword = () => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -16,18 +19,18 @@ const ResetPassword = () => {
 
   useEffect(() => {
     if (!oobCode) {
-      setError('Invalid or expired reset link.');
+      toast.error('Invalid or expired reset link.', { position: toast.POSITION.TOP_CENTER });
     }
   }, [oobCode]);
 
   const handleResetPassword = async () => {
     if (!newPassword || !confirmPassword) {
-      setError('Please enter both password fields.');
+      toast.error('Please enter both password fields.', { position: toast.POSITION.TOP_CENTER });
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      setError('Passwords do not match.');
+      toast.error('Passwords do not match.', { position: toast.POSITION.TOP_CENTER });
       return;
     }
 
@@ -35,17 +38,16 @@ const ResetPassword = () => {
       // Confirm the password reset using the oobCode and new password
       const auth = getAuth();
       await confirmPasswordReset(auth, oobCode, newPassword);
-      setSuccessMessage('Password reset successful. You can now log in.');
+      toast.success('Password reset successful. Redirecting to login...', { position: toast.POSITION.TOP_CENTER });
       setTimeout(() => navigate('/login'), 3000); // Redirect to login after 3 seconds
     } catch (error) {
-      setError('Error resetting password. Please try again.');
-      setSuccessMessage('');
+      toast.error('Error resetting password. Please try again.', { position: toast.POSITION.TOP_CENTER });
     }
   };
 
   return (
-    <div className="flex justify-center items-center h-screen">
-      <div className="max-w-sm w-full p-6 bg-white shadow-md rounded-lg">
+    <div className="flex items-center justify-center h-screen bg-gray-100">
+      <div className="w-full max-w-md p-6 bg-white shadow-lg rounded-lg">
         <h2 className="text-2xl font-semibold text-center mb-4">Reset Password</h2>
         
         <div className="mb-4">
@@ -72,9 +74,6 @@ const ResetPassword = () => {
           />
         </div>
 
-        {error && <p className="text-red-500 text-sm">{error}</p>}
-        {successMessage && <p className="text-green-500 text-sm">{successMessage}</p>}
-        
         <button
           onClick={handleResetPassword}
           className="w-full bg-blue-500 text-white py-2 rounded-lg mt-4 hover:bg-blue-600"

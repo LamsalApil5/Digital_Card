@@ -3,7 +3,7 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { set, ref } from 'firebase/database';
 import { auth, database } from '../firebase';
 import { useNavigate } from 'react-router-dom';
-
+import { toast } from 'react-toastify';
 const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -21,7 +21,6 @@ const Signup = () => {
       await set(userRef, {
         email: user.email,
         uid: user.uid,
-        displayName: '', // Empty display name to be updated later
         createdAt: new Date().toISOString(), // Timestamp when the user was created
         profileSetupComplete: false, // Flag to track if the profile setup is complete
         profile: {
@@ -51,8 +50,8 @@ const Signup = () => {
       navigate('/profile');
     } catch (error) {
       // Show error message in a popup
-      alert('Error creating user: ' + error.message);
-      setError('Error creating user: ' + error.message);
+      toast.error('Enter email and password.');
+      console.log('Error creating user: ' + error.message);
     }
   };
 
@@ -68,7 +67,7 @@ const Signup = () => {
         type="email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+        className="mt-1 block w-full p-2 border border-gray-300 rounded-md" required
       />
     </div>
 
@@ -79,11 +78,10 @@ const Signup = () => {
         type="password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+        className="mt-1 block w-full p-2 border border-gray-300 rounded-md" 
+        required
       />
     </div>
-
-    {error && <p className="text-red-500 text-sm">{error}</p>}
 
     <button
       onClick={handleSignup}

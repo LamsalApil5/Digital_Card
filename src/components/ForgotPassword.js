@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { sendPasswordResetEmail } from 'firebase/auth';
-import { auth } from '../firebase'; // Firebase initialization
+import { ref, get } from 'firebase/database';
+import { auth, database } from '../firebase'; // Firebase initialization
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
@@ -11,19 +13,39 @@ const ForgotPassword = () => {
 
   const handleForgotPassword = async () => {
     if (!email) {
-      setError('Please enter your email address.');
+      toast.error('Please enter your email address.');
       return;
     }
 
+    // Check if email exists in the Realtime Database
+    const userRef = ref(database, 'users');
     try {
-      // Send password reset email
+      // Fetch all users and check if the email exists
+      const snapshot = await get(userRef);
+      const users = snapshot.val();
+
+      // Check if any user has the given email
+      let emailExists = false;
+      for (let uid in users) {
+        if (users[uid].contactemi === email) {
+          emailExists = true;
+          break;
+        }
+      }
+
+      if (!emailExists) {
+        toast.error('This email address is not registered.');
+        setSuccessMessage('');
+        return;
+      }
+
+      // If email exists, send password reset email
       await sendPasswordResetEmail(auth, email);
-      setSuccessMessage('Password reset email sent. Please check your inbox.');
-      setError('');
-      setTimeout(() => navigate('/login'), 3000); 
+      toast.success('Password reset email sent. Please check your inbox.');
+      setTimeout(() => navigate('/login'), 3000);
     } catch (error) {
-      setError('Failed to send reset email. Please check the email address and try again.');
-      setSuccessMessage('');
+      toast.error('Failed to send reset email. Please check the email address and try again.');
+      console.error('Error:', error.message);
     }
   };
 
@@ -31,7 +53,7 @@ const ForgotPassword = () => {
     <div className="flex justify-center items-center h-screen">
       <div className="max-w-sm w-full p-6 bg-white shadow-md rounded-lg">
         <h2 className="text-2xl font-semibold text-center mb-4">Forgot Password</h2>
-        
+
         <div className="mb-4">
           <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email Address</label>
           <input
@@ -44,9 +66,7 @@ const ForgotPassword = () => {
           />
         </div>
 
-        {error && <p className="text-red-500 text-sm">{error}</p>}
-        {successMessage && <p className="text-green-500 text-sm">{successMessage}</p>}
-        
+
         <button
           onClick={handleForgotPassword}
           className="w-full bg-blue-500 text-white py-2 rounded-lg mt-4 hover:bg-blue-600"
