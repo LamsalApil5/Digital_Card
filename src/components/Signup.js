@@ -29,7 +29,9 @@ const Signup = () => {
           jobTitle: '',
           contactEmail: '',
           contactPhone: '',
+          contactTelphone: '',
           profilePicture: '',
+          GoogleMap:'',
           dateOfBirth: '',
           address:'',
           socialLinks: { 
@@ -41,7 +43,6 @@ const Signup = () => {
             youtube: '',
             website: '',
             reaProfile: '',
-            rateMyAgent: ''
           },
         },
       });

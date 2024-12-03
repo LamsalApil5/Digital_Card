@@ -1,9 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { ref, get } from "firebase/database";
 import { database } from "../firebase";
-import { FaLinkedin, FaTwitter, FaInstagram } from "react-icons/fa";
+import {
+  FaLinkedin,
+  FaTwitter,
+  FaInstagram,
+  FaPhone,
+  FaPhoneSquare,
+  FaMailchimp,
+  FaQrcode,
+  FaLink,
+} from "react-icons/fa";
 import { QRCodeCanvas } from "qrcode.react";
 import { useParams } from "react-router-dom";
+import manImage from "../man.png";
+import companyLogo from "../companylogo.png";
 
 const DigitalCard = () => {
   const { userUID } = useParams();
@@ -39,57 +50,102 @@ const DigitalCard = () => {
   }, [userUID]);
 
   if (loading) {
-    return <div className="flex justify-center items-center h-screen text-xl">Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-screen text-xl">
+        Loading...
+      </div>
+    );
   }
 
   if (!profile) {
-    return <div className="flex justify-center items-center h-screen text-xl">No profile data available.</div>;
+    return (
+      <div className="flex justify-center items-center h-screen text-xl">
+        No profile data available.
+      </div>
+    );
   }
 
   const profileURL = `${window.location.origin}/digitalCard/${userUID}`;
 
   return (
-    <div className="min-h-screen bg-orange-500 text-white flex flex-col items-center justify-center">
-      <div className="w-full max-w-md p-6">
-        <div className="text-center">
-          {profile.profilePicture ? (
+    <div className="min-h-screen bg-orange-500 text-white ">
+      <div className="section relative text-center mb-8 w-full max-w-sm mx-auto shadow-lg">
+        <div
+          className="bg-center bg-cover bg-no-repeat w-full min-h-[20rem] sm:min-h-[25rem] md:min-h-[30rem]"
+          style={{
+            backgroundImage: `url(${profile.profilePicture || manImage})`,
+          }}
+        >
+          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-orange-500 via-transparent to-transparent rounded-lg"></div>
+        </div>
+
+        {/* Profile Details Section - Left-Aligned */}
+        <div
+          className="absolute top-2/4 left-0 w-full p-4 text-white text-left flex flex-col "
+          style={{ height: "calc(100% - 80px)" }}
+        >
+          {/* Profile Name and Information */}
+          <h1 className="text-3xl font-semibold mb-2">
+            {profile.fullName || "Full Name"}
+          </h1>
+          <p className="mb-1">Multi Dynamic</p>
+          <p className="mb-4">{profile.address || "No address available"}</p>
+
+          {/* Company Logo Aligned to Left */}
+          <div className="mb-4 flex justify-start">
             <img
-              src={profile.profilePicture}
-              alt="Profile"
-              className="w-24 h-24 rounded-full mx-auto mb-4"
+              src={companyLogo}
+              alt="Company logo for Multi Dynamic"
+              className="h-8"
             />
-          ) : (
-            <div className="w-24 h-24 rounded-full bg-gray-300 mx-auto mb-4 flex items-center justify-center text-black">
-              <span>No Pic</span>
-            </div>
-          )}
-          <h2 className="text-2xl font-bold">{profile.fullName || "Full Name"}</h2>
-          <p className="text-sm">{profile.jobTitle || "Job Title"}</p>
-          <p className="text-sm mt-2">{profile.contactEmail || "Email not available"}</p>
-          <p className="text-sm">{profile.contactPhone || "Phone not available"}</p>
+          </div>
+
+          {/* Contact Icons - Left Aligned */}
+          <div>
+            <ul className="flex space-x-4 justify-start">
+              <li>
+                <a href={`tel:${profile.contactPhone}`} className="qr_cc_card">
+                  <FaPhone className="w-6 h-6 text-blue-600" />
+                </a>
+              </li>
+              <li>
+                <a
+                  href={`tel:${profile.contactTelphone}`}
+                  className="qr_cc_card"
+                >
+                  <FaPhoneSquare className="w-6 h-6 text-blue-600" />
+                </a>
+              </li>
+              <li>
+                <a
+                  href={`mailto:${profile.contactEmail}`}
+                  className="qr_cc_card"
+                >
+                  <FaMailchimp className="w-6 h-6 text-blue-600" />
+                </a>
+              </li>
+            </ul>
+          </div>
         </div>
-        <div className="flex justify-center space-x-4 mt-4">
-          {profile.socialLinks?.linkedin && (
-            <a href={profile.socialLinks.linkedin} target="_blank" rel="noopener noreferrer">
-              <FaLinkedin className="w-6 h-6 text-blue-600" />
-            </a>
-          )}
-          {profile.socialLinks?.twitter && (
-            <a href={profile.socialLinks.twitter} target="_blank" rel="noopener noreferrer">
-              <FaTwitter className="w-6 h-6 text-blue-400" />
-            </a>
-          )}
-          {profile.socialLinks?.instagram && (
-            <a href={profile.socialLinks.instagram} target="_blank" rel="noopener noreferrer">
-              <FaInstagram className="w-6 h-6 text-pink-600" />
-            </a>
-          )}
-        </div>
+      </div>
+
+      <div className="flex justify-between items-center mt-6 max-w-7xl mx-auto">
+        {/* QR Code Button */}
         <button
           onClick={() => setIsModalOpen(true)}
-          className="mt-6 bg-white text-orange-600 rounded-full px-4 py-2 hover:bg-gray-100 w-full"
+          className="bg-white text-orange-600 rounded-full w-12 h-12 flex items-center justify-center hover:bg-gray-100"
         >
-          Generate QR Code
+          <FaQrcode className="w-6 h-6" />
+        </button>
+
+        {/* Copy Link Button */}
+        <button
+          onClick={() =>
+            navigator.clipboard.writeText(profile.link || "default link")
+          }
+          className="bg-white text-orange-600 rounded-full w-12 h-12 flex items-center justify-center hover:bg-gray-100"
+        >
+          <FaLink className="w-6 h-6" />
         </button>
       </div>
 

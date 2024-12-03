@@ -9,13 +9,20 @@ const ProfilePage = () => {
   const [jobTitle, setJobTitle] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const [contactPhone, setContactPhone] = useState("");
+  const [contactTelphone, setContactTelphone] = useState("");
   const [profilePicture, setProfilePicture] = useState("");
+  const [googleMap, setGoogleMap] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [address, setAddress] = useState("");
   const [socialLinks, setSocialLinks] = useState({
     linkedin: "",
     twitter: "",
     instagram: "",
+    facebook: "",
+    github: "",
+    youtube: "",
+    website: "",
+    reaProfile: "",
   });
   const [loading, setLoading] = useState(true);
   const [profileSetupComplete, setProfileSetupComplete] = useState(false);
@@ -37,7 +44,9 @@ const ProfilePage = () => {
             setJobTitle(profile.jobTitle || "");
             setContactEmail(profile.contactEmail || "");
             setContactPhone(profile.contactPhone || "");
+            setContactTelphone(profile.contactTelphone || "");
             setProfilePicture(profile.profilePicture || "");
+            setGoogleMap(profile.googleMap || "");
             setDateOfBirth(profile.dateOfBirth || "");
             setAddress(profile.address || "");
             setSocialLinks(
@@ -45,6 +54,11 @@ const ProfilePage = () => {
                 linkedin: "",
                 twitter: "",
                 instagram: "",
+                facebook: "",
+                github: "",
+                youtube: "",
+                website: "",
+                reaProfile: "",
               }
             );
             setProfileSetupComplete(userData.profileSetupComplete || false);
@@ -74,7 +88,9 @@ const ProfilePage = () => {
             jobTitle,
             contactEmail,
             contactPhone,
+            contactTelphone,
             profilePicture,
+            googleMap,
             dateOfBirth,
             address,
             socialLinks,
@@ -247,6 +263,22 @@ const ProfilePage = () => {
                 onChange={(e) => setContactPhone(e.target.value)}
               />
             </div>
+            {/* Phone Number */}
+            <div className="mb-4">
+              <label
+                htmlFor="contactTelphone"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Telphone
+              </label>
+              <input
+                id="contactTelphone"
+                type="text"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg mt-2"
+                value={contactTelphone}
+                onChange={(e) => setContactTelphone(e.target.value)}
+              />
+            </div>
 
             {/* Profile Picture */}
             <div className="mb-4">
@@ -272,6 +304,22 @@ const ProfilePage = () => {
                   />
                 </div>
               )}
+            </div>
+             {/* Address */}
+             <div className="mb-4">
+              <label
+                htmlFor="googleMap"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Location
+              </label>
+              <input
+                id="googleMap"
+                type="text"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg mt-2"
+                value={googleMap}
+                onChange={(e) => setGoogleMap(e.target.value)}
+              />
             </div>
             {/* Date of Birth */}
             <div className="mb-4">
@@ -417,6 +465,24 @@ const ProfilePage = () => {
                     handleSocialLinkChange("website", e.target.value)
                   }
                 />
+                {/* reaProfile */}
+              <div className="mb-4">
+                <label
+                  htmlFor="reaProfile"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Rea Profile
+                </label>
+                <input
+                  id="reaProfile"
+                  type="text"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg mt-2"
+                  value={socialLinks.reaProfile || ""}
+                  onChange={(e) =>
+                    handleSocialLinkChange("website", e.target.value)
+                  }
+                />
+               </div>
               </div>
             </div>
           </div>
