@@ -81,7 +81,7 @@ const DigitalCard = () => {
 
         {/* Profile Details Section - Left-Aligned */}
         <div
-          className="absolute top-2/4 left-0 w-full p-4 text-white text-left flex flex-col " >
+          className="absolute top-1/4 sm:top-1/3 md:top-2/4 left-0 w-full p-4 text-white text-left flex flex-col " >
           {/* Profile Name and Information */}
           <h1 className="text-3xl font-semibold mb-2">
             {profile.fullName || "Full Name"}
