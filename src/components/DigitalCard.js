@@ -291,29 +291,23 @@ const DigitalCard = () => {
         </button>
       </div>
 
-
-      <div className="fixed bottom-6 right-10 z-50 pb-5 max-w-7xl mx-auto flex justify-center w-full md:w-auto items-center space-x-2">
-  {/* Save Contact Label and Button */}
-  <div className=" text-green-600 rounded-full flex items-center px-2 py-1 space-x-2 group">
-    {/* Save Contact Text with smaller size and same background as button */}
-    <span className="text-sm font-medium flex items-center justify-center py-1 px-2 rounded-full bg-white text-transparent group-hover:text-orange-600 group-hover:bg-white transition-all duration-300 transform group-hover:scale-100 opacity-0 group-hover:opacity-100">
-      Save Contact
-    </span>
-    {/* Save Button */}
-    <button
-      onClick={saveContact}
-      className="bg-white text-orange-600 rounded-full w-12 h-12 flex items-center justify-center hover:bg-gray-100"
-    >
-      {isSaved ? (
-        <FaSave className="w-6 h-6 text-blue-500" />
-      ) : (
-        <FaSave className="w-6 h-6" />
-      )}
-    </button>
-  </div>
-</div>
-
-
+      <div className="fixed bottom-6 right-10 z-50 pb-5 max-w-7xl mx-auto flex  items-start justify-end w-full space-x-2">
+        <div className=" text-green-600 rounded-full flex items-start px-2 py-1 space-x-2 group">
+          <span className="text-sm font-medium flex items-start justify-center py-1 px-2 rounded-full bg-white text-transparent group-hover:text-orange-600 group-hover:bg-white transition-all duration-300 transform group-hover:scale-100 opacity-0 group-hover:opacity-100">
+            Save Contact
+          </span>
+          <button
+            onClick={saveContact}
+            className="bg-white text-orange-600 rounded-full w-12 h-12 flex items-center justify-center hover:bg-gray-100"
+          >
+            {isSaved ? (
+              <FaSave className="w-6 h-6" />
+            ) : (
+              <FaSave className="w-6 h-6" />
+            )}
+          </button>
+        </div>
+      </div>
 
       {isModalOpen && (
         <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
