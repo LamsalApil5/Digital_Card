@@ -200,7 +200,7 @@ const ProfilePage = () => {
                   console.log("UserId not found in localStorage");
                 }
               }}
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700 transition"
+              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700 transition hidden sm:block"
             >
               Preview
             </button>
@@ -209,7 +209,7 @@ const ProfilePage = () => {
       </div>
 
       {/* Profile Setup Section */}
-      <div className="w-full px-32 md:px-16 sm:px-8">
+      <div className="w-full px-8 md:px-16 sm:px-4">
         <h2 className="text-3xl font-semibold text-center mb-6">
           Setup Your Profile
         </h2>
