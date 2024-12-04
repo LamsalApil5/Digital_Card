@@ -251,17 +251,20 @@ const DigitalCard = () => {
       </div>
 
       <div class="bg-white rounded-lg shadow-lg p-6 mb-4 max-w-sm mx-auto">
-        <h2 class="text-xl mb-4 text-black text-center font-bold">Web Links</h2>   
+        <h2 class="text-xl mb-4 text-black text-left font-bold">
+          My Quick Links
+        </h2>
         {/* 
         <!-- Social Media Links --> */}
+        {/* LinkedIn */}
         {profile.socialLinks.linkedin && (
           <a
             href={profile.socialLinks.linkedin}
             target="_blank"
             rel="noreferrer noopener"
-            class="flex items-center justify-between p-2 hover:bg-gray-50 rounded"
+            className="flex items-center justify-between p-2 hover:bg-gray-200 rounded"
           >
-            <div class="flex items-center gap-3 text-black">
+            <div className="flex items-center gap-3 text-black">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 x="0px"
@@ -272,11 +275,11 @@ const DigitalCard = () => {
               >
                 <path d="M41,4H9C6.24,4,4,6.24,4,9v32c0,2.76,2.24,5,5,5h32c2.76,0,5-2.24,5-5V9C46,6.24,43.76,4,41,4z M17,20v19h-6V20H17z M11,14.47c0-1.4,1.2-2.47,3-2.47s2.93,1.07,3,2.47c0,1.4-1.12,2.53-3,2.53C12.2,17,11,15.87,11,14.47z M39,39h-6c0,0,0-9.26,0-10 c0-2-1-4-3.5-4.04h-0.08C27,24.96,26,27.02,26,29c0,0.91,0,10,0,10h-6V20h6v2.56c0,0,1.93-2.56,5.81-2.56 c3.97,0,7.19,2.73,7.19,8.26V39z"></path>
               </svg>
-              <p class="font-medium text-black">LinkedIn</p>
+              <p className="font-medium text-black">LinkedIn</p>
             </div>
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5 text-gray-400"
+              className="h-5 w-5 text-gray-400"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -286,14 +289,15 @@ const DigitalCard = () => {
           </a>
         )}
 
+        {/* Twitter */}
         {profile.socialLinks.twitter && (
           <a
             href={profile.socialLinks.twitter}
             target="_blank"
             rel="noreferrer noopener"
-            class="flex items-center justify-between p-2 hover:bg-gray-50 rounded"
+            className="flex items-center justify-between p-2 hover:bg-gray-200 rounded"
           >
-            <div class="flex items-center gap-3 text-black">
+            <div className="flex items-center gap-3 text-black">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 x="0px"
@@ -304,12 +308,11 @@ const DigitalCard = () => {
               >
                 <path d="M 11 4 C 7.134 4 4 7.134 4 11 L 4 39 C 4 42.866 7.134 46 11 46 L 39 46 C 42.866 46 46 42.866 46 39 L 46 11 C 46 7.134 42.866 4 39 4 L 11 4 z M 13.085938 13 L 21.023438 13 L 26.660156 21.009766 L 33.5 13 L 36 13 L 27.789062 22.613281 L 37.914062 37 L 29.978516 37 L 23.4375 27.707031 L 15.5 37 L 13 37 L 22.308594 26.103516 L 13.085938 13 z M 16.914062 15 L 31.021484 35 L 34.085938 35 L 19.978516 15 L 16.914062 15 z"></path>
               </svg>
-              <p class="font-medium text-black">Twitter</p>
+              <p className="font-medium text-black">Twitter</p>
             </div>
-
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5 text-gray-400"
+              className="h-5 w-5 text-gray-400"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -325,7 +328,7 @@ const DigitalCard = () => {
             href={profile.socialLinks.instagram}
             target="_blank"
             rel="noreferrer noopener"
-            class="flex items-center justify-between p-2 hover:bg-gray-50 rounded"
+            class="flex items-center justify-between p-2 hover:bg-gray-200 rounded"
           >
             <div class="flex items-center gap-3 text-black">
               <svg
@@ -358,7 +361,7 @@ const DigitalCard = () => {
             href={profile.socialLinks.facebook}
             target="_blank"
             rel="noreferrer noopener"
-            class="flex items-center justify-between p-2 hover:bg-gray-50 rounded"
+            class="flex items-center justify-between p-2 hover:bg-gray-200 rounded"
           >
             <div class="flex items-center gap-3 text-black">
               <svg
@@ -391,7 +394,7 @@ const DigitalCard = () => {
             href={profile.socialLinks.github}
             target="_blank"
             rel="noreferrer noopener"
-            class="flex items-center justify-between p-2 hover:bg-gray-50 rounded"
+            class="flex items-center justify-between p-2 hover:bg-gray-200 rounded"
           >
             <div class="flex items-center gap-3 text-black">
               <svg
@@ -424,7 +427,7 @@ const DigitalCard = () => {
             href={profile.socialLinks.youtube}
             target="_blank"
             rel="noreferrer noopener"
-            class="flex items-center justify-between p-2 hover:bg-gray-50 rounded"
+            class="flex items-center justify-between p-2 hover:bg-gray-200 rounded"
           >
             <div class="flex items-center gap-3 text-black">
               <svg
@@ -457,7 +460,7 @@ const DigitalCard = () => {
             href={profile.socialLinks.website}
             target="_blank"
             rel="noreferrer noopener"
-            class="flex items-center justify-between p-2 hover:bg-gray-50 rounded"
+            class="flex items-center justify-between p-2 hover:bg-gray-200 rounded"
           >
             <div class="flex items-center gap-3 text-black">
               <svg
@@ -499,7 +502,7 @@ const DigitalCard = () => {
             href={profile.socialLinks.reaProfile}
             target="_blank"
             rel="noreferrer noopener"
-            class="flex items-center justify-between p-2 hover:bg-gray-50 rounded"
+            class="flex items-center justify-between p-2 hover:bg-gray-200 rounded"
           >
             <div class="flex items-center gap-3 text-black">
               <svg
