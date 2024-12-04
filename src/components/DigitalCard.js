@@ -108,7 +108,7 @@ const DigitalCard = () => {
     <div className="min-h-screen bg-orange-500 pt-10 pb-20 text-white ">
       <div className="section relative text-center pt-10 mb-8 w-full max-w-sm mx-auto rounded-lg shadow-lg">
         <div
-          className="bg-center bg-cover bg-no-repeat pt-5 w-full min-h-[20rem] sm:min-h-[25rem] md:min-h-[30rem]"
+          className="bg-center bg-cover bg-no-repeat w-full min-h-[30rem] sm:min-h-[25rem] md:min-h-[30rem]"
           style={{
             backgroundImage: `url(${profile.profilePicture || manImage})`,
           }}
