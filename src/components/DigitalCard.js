@@ -10,14 +10,14 @@ import manImage from "../man.png";
 const DigitalCard = () => {
   const { userUID } = useParams();
   const [profile, setProfile] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   useEffect(() => {
     const fetchUserProfile = async () => {
       if (!userUID) {
         console.error("No userUID found in URL");
-        setLoading(false);
+        setIsLoading(false);
         return;
       }
 
@@ -33,14 +33,14 @@ const DigitalCard = () => {
       } catch (error) {
         console.error("Error fetching user profile:", error);
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
 
     fetchUserProfile();
   }, [userUID]);
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen text-xl">
         Loading...
