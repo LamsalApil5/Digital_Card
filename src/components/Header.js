@@ -44,7 +44,7 @@ function Header({ user, handleLogout }) {
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="lg:hidden bg-orange-600 text-white w-full absolute top-16 left-0 py-4 px-6">
+        <div className="lg:hidden bg-orange-600 text-white w-full absolute top-16 left-0 py-4 px-6 z-50">
           <nav className="space-y-4">
             {currentUser ? (
               <>
