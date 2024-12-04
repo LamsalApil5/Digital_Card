@@ -25,34 +25,34 @@ const ProfilePage = () => {
     reaProfile: "",
   });
   const [profileSetupComplete, setProfileSetupComplete] = useState(false);
-  const [searchResults, setSearchResults] = useState([]); // Store search results for dropdown
   const [locationData, setLocationData] = useState(null); // Store full JSON data for selected location
+  const [searchResults, setSearchResults] = useState([]); // Store search results for dropdown
+  const [prevSearch, setPrevSearch] = useState(""); // Store previous search value
 
   // Handle search and update dropdown based on input
   const handleSearch = (searchValue) => {
-    setGoogleMap(searchValue); // Update the input value in the state
+    // Only update the input if the search value is not the same as the previous one
+    if (searchValue.trim() && searchValue !== prevSearch) {
+      setGoogleMap(searchValue); // Update the input value in the state
+      setPrevSearch(searchValue); // Update previous search value
 
-    // If there's no search value or it's just spaces, do nothing
-    if (!searchValue.trim()) {
-      setSearchResults([]);
-      return;
+      // Fetch location data from the Nominatim API
+      fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${searchValue}&addressdetails=1&limit=5`
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.length > 0) {
+            setSearchResults(data); // Populate dropdown with results
+          } else {
+            setSearchResults([]); // Clear dropdown if no results
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching location data:", error);
+          setSearchResults([]); // Clear dropdown on error
+        });
     }
-
-    fetch(
-      `https://nominatim.openstreetmap.org/search?format=json&q=${searchValue}`
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.length > 0) {
-          setSearchResults(data); // Populate dropdown with results
-        } else {
-          setSearchResults([]); // Clear dropdown if no results
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching location data:", error);
-        setSearchResults([]); // Clear dropdown on error
-      });
   };
 
   // Handle selection from dropdown
@@ -81,7 +81,7 @@ const ProfilePage = () => {
             setContactPhone(profile.contactPhone || "");
             setContactTelphone(profile.contactTelphone || "");
             setProfilePicture(profile.profilePicture || "");
-            setGoogleMap(profile.googleMap.display_name || "");
+            setGoogleMap(profile.googleMap || "");
             setDateOfBirth(profile.dateOfBirth || "");
             setAddress(profile.address || "");
             setSocialLinks(
@@ -132,7 +132,7 @@ const ProfilePage = () => {
               contactPhone,
               contactTelphone,
               profilePicture,
-              googleMap: locationData,
+              googleMap,
               dateOfBirth,
               address,
               socialLinks,
@@ -174,7 +174,7 @@ const ProfilePage = () => {
   //const profileURL = `${window.location.origin}/digitalCard/${localStorage.getItem('userUID')}`;
 
   return (
-    <div className="flex flex-wrap justify-center gap-8 mt-10 pb-10">
+    <div className="container mx-auto flex flex-wrap justify-center gap-8 mt-10 pb-10">
       {/* Digital Card Section */}
       <div className="w-full p-8">
         <div className="flex flex-col items-center">
@@ -376,7 +376,7 @@ const ProfilePage = () => {
               />
             </div>
 
-            <div className="mb-4">
+            <div className="mb-4 relative">
               {/* Input Field */}
               <label
                 htmlFor="googleMap"
@@ -467,6 +467,24 @@ const ProfilePage = () => {
                   }
                 />
               </div>
+               {/* facebook */}
+               <div className="mb-4">
+                <label
+                  htmlFor="facebook"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Facebook
+                </label>
+                <input
+                  id="facebook"
+                  type="text"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg mt-2"
+                  value={socialLinks.facebook}
+                  onChange={(e) =>
+                    handleSocialLinkChange("facebook", e.target.value)
+                  }
+                />
+              </div>
               {/* GitHub */}
               <div className="mb-4">
                 <label
@@ -535,7 +553,7 @@ const ProfilePage = () => {
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg mt-2"
                   value={socialLinks.reaProfile || ""}
                   onChange={(e) =>
-                    handleSocialLinkChange("website", e.target.value)
+                    handleSocialLinkChange("reaProfile", e.target.value)
                   }
                 />
               </div>
