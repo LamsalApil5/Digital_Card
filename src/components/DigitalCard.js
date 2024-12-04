@@ -113,7 +113,7 @@ const DigitalCard = () => {
             backgroundImage: `url(${profile.profilePicture || manImage})`,
           }}
         >
-          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-black via-transparent to-transparent rounded-lg"></div>
+         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-black/60 via-transparent/50 to-transparent/0 rounded-lg"></div>
 
           {/* Profile Details Section - Positioned at Bottom */}
           <div className="absolute bottom-0 w-full p-4 text-white text-left flex flex-col bg-gradient-to-t from-black via-transparent to-transparent rounded-b-lg">
