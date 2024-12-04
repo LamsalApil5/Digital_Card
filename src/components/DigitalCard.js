@@ -579,17 +579,17 @@ const DigitalCard = () => {
         )}
       </div>
 
-      <div className="fixed bottom-6 left-10 z-50 pb-5 max-w-7xl mx-auto flex justify-between w-full md:w-auto">
+      <div className="fixed bottom-6 left-10 z-50 pb-5 max-w-7xl mx-auto md:w-auto space-x-2">
         {/* QR Code Button */}
         <button
           onClick={() => setIsModalOpen(true)}
-          className="bg-white text-orange-600 rounded-full w-12 h-12 flex items-center justify-center hover:bg-gray-100 mb-4 sm:mb-0"
+          className="bg-white text-orange-600 rounded-full w-12 h-12 flex items-center justify-center hover:bg-gray-100"
         >
           <FaQrcode className="w-6 h-6" />
         </button>
       </div>
 
-      <div className="fixed bottom-6 right-10 z-50 pb-5 max-w-7xl mx-auto flex  items-start justify-end w-full space-x-2">
+      <div className="fixed bottom-6 right-10 z-50 pb-5 max-w-7xl mx-auto flex  items-start justify-end space-x-2">
         <div className=" text-green-600 rounded-full flex items-center space-x-2 group">
           <span className="text-sm font-medium flex items-center justify-center py-1 px-2 rounded-full bg-white text-transparent group-hover:text-orange-600 group-hover:bg-white transition-all duration-300 transform group-hover:scale-100 opacity-0 group-hover:opacity-100">
             Save Contact
