@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import companyLogo from "../companylogo.png";
 
 function Header({ user, handleLogout }) {
   // Get the userUID from localStorage if user is not provided
   const storedUserUID = localStorage.getItem("userUID");
-  const currentUser = user || storedUserUID ? { uid: storedUserUID, email: user?.email } : null;
+  const currentUser =
+    user || storedUserUID ? { uid: storedUserUID, email: user?.email } : null;
 
   // State for toggling the mobile menu
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -17,24 +19,36 @@ function Header({ user, handleLogout }) {
   return (
     <header className="bg-orange-600 text-white py-4 shadow-md">
       <div className="container mx-auto flex justify-between items-center px-6">
-        <Link to={`/DigitalCard/${currentUser ? currentUser.uid : 'guest'}`} className="text-lg font-bold hover:underline">
-          Digital Card
+        <Link
+          to={`/DigitalCard/${currentUser ? currentUser.uid : "guest"}`}
+          className="text-lg font-bold hover:underline"
+        >
+          <img
+            src={companyLogo}
+            alt="Company logo for Multi Dynamic"
+            className="h-10 sm:h-12 max-h-12"
+          />
         </Link>
-        
+
         {/* Hamburger button for mobile */}
-        <button 
-          onClick={toggleMenu} 
+        <button
+          onClick={toggleMenu}
           className="block lg:hidden focus:outline-none"
         >
-          <span className="text-white text-3xl">&#9776;</span> {/* Hamburger icon */}
+          <span className="text-white text-3xl">&#9776;</span>{" "}
+          {/* Hamburger icon */}
         </button>
 
         {/* Desktop Menu */}
         <nav className="hidden lg:flex space-x-4">
           {currentUser ? (
             <>
-              <Link to="/profile" className="hover:underline">Profile</Link>
-              <button onClick={handleLogout} className="hover:underline">Logout</button>
+              <Link to="/profile" className="hover:underline">
+                Profile
+              </Link>
+              <button onClick={handleLogout} className="hover:underline">
+                Logout
+              </button>
             </>
           ) : (
             <></>
@@ -48,8 +62,12 @@ function Header({ user, handleLogout }) {
           <nav className="space-y-4">
             {currentUser ? (
               <>
-                <Link to="/profile" className="hover:underline block">Profile</Link>
-                <button onClick={handleLogout} className="hover:underline">Logout</button>
+                <Link to="/profile" className="hover:underline block">
+                  Profile
+                </Link>
+                <button onClick={handleLogout} className="hover:underline">
+                  Logout
+                </button>
               </>
             ) : (
               <></>
@@ -70,7 +88,6 @@ function Header({ user, handleLogout }) {
               Preview
             </button>
           </nav>
-
         </div>
       )}
     </header>

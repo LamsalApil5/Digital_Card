@@ -23,8 +23,11 @@ const Signup = () => {
         createdAt: new Date().toISOString(), // Timestamp when the user was created
         profileSetupComplete: false, // Flag to track if the profile setup is complete
         profile: {
-          fullName: '',
+          firstName:'',
+          middleName:'',
+          lastName:'',
           jobTitle: '',
+          companyName:'',
           contactEmail: '',
           contactPhone: '',
           contactTelphone: '',

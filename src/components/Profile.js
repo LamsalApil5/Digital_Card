@@ -5,12 +5,15 @@ import { FaLinkedin, FaTwitter, FaInstagram } from "react-icons/fa";
 import { toast } from "react-toastify";
 
 const ProfilePage = () => {
-  const [fullName, setFullName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [middleName, setMiddleName] = useState("");
+  const [lastName, setlastName] = useState("");
   const [jobTitle, setJobTitle] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const [contactPhone, setContactPhone] = useState("");
   const [contactTelphone, setContactTelphone] = useState("");
   const [profilePicture, setProfilePicture] = useState("");
+  const [companyName, setCompanyName] = useState("");
   const [googleMap, setGoogleMap] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [address, setAddress] = useState("");
@@ -75,12 +78,15 @@ const ProfilePage = () => {
             const userData = snapshot.val();
             const profile = userData.profile || {};
 
-            setFullName(profile.fullName || "");
+            setFirstName(profile.firstName || "");
+            setMiddleName(profile.middleName || "");
+            setlastName(profile.lastName || "");
             setJobTitle(profile.jobTitle || "");
             setContactEmail(profile.contactEmail || "");
             setContactPhone(profile.contactPhone || "");
             setContactTelphone(profile.contactTelphone || "");
             setProfilePicture(profile.profilePicture || "");
+            setCompanyName(profile.companyName|| "");
             setGoogleMap(profile.googleMap || "");
             setDateOfBirth(profile.dateOfBirth || "");
             setAddress(profile.address || "");
@@ -126,12 +132,15 @@ const ProfilePage = () => {
             createdAt: userData.createdAt,
             profileSetupComplete: true,
             profile: {
-              fullName,
+              firstName,
+              middleName,
+              lastName,
               jobTitle,
               contactEmail,
               contactPhone,
               contactTelphone,
               profilePicture,
+              companyName,
               googleMap,
               dateOfBirth,
               address,
@@ -185,7 +194,7 @@ const ProfilePage = () => {
               className="w-24 h-24 rounded-full object-cover mb-4"
             />
           )}
-          <h2 className="text-2xl font-semibold">{fullName}</h2>
+          <h2 className="text-2xl font-semibold">{firstName} {middleName} {lastName}</h2>
           <p className="text-gray-500">{jobTitle}</p>
           <div className="flex space-x-4 mt-4">
             {socialLinks.linkedin && (
@@ -246,20 +255,52 @@ const ProfilePage = () => {
         </h2>
         <form>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {/* Full Name */}
+            {/* First Name */}
             <div className="mb-4">
               <label
-                htmlFor="fullName"
+                htmlFor="firstName"
                 className="block text-sm font-medium text-gray-700"
               >
-                Full Name
+                First Name
               </label>
               <input
-                id="fullName"
+                id="firstName"
                 type="text"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg mt-2"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+              />
+            </div>
+            {/* Middle Name */}
+            <div className="mb-4">
+              <label
+                htmlFor="middleName"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Middle Name
+              </label>
+              <input
+                id="middleName"
+                type="text"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg mt-2"
+                value={middleName}
+                onChange={(e) => setMiddleName(e.target.value)}
+              />
+            </div>
+            {/* Last Name */}
+            <div className="mb-4">
+              <label
+                htmlFor="lastName"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Last Name
+              </label>
+              <input
+                id="lastName"
+                type="text"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg mt-2"
+                value={lastName}
+                onChange={(e) => setlastName(e.target.value)}
               />
             </div>
             {/* Profile Picture */}
@@ -276,6 +317,22 @@ const ProfilePage = () => {
                 accept="image/*"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg mt-2"
                 onChange={handleFileChange}
+              />
+            </div>
+            {/* Company Name */}
+            <div className="mb-4">
+              <label
+                htmlFor="companyName"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Company Name
+              </label>
+              <input
+                id="companyName"
+                type="text"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg mt-2"
+                value={companyName}
+                onChange={(e) => setCompanyName(e.target.value)}
               />
             </div>
             {/* Job Title */}
@@ -559,7 +616,7 @@ const ProfilePage = () => {
               </div>
             </div>
           </div>
-          <div className="flex items-center justify-center">
+          <div className="flex items-center justify-center my-16">
             <button
               type="button"
               onClick={handleSave}
