@@ -113,7 +113,7 @@ const DigitalCard = () => {
             backgroundImage: `url(${profile.profilePicture || manImage})`,
           }}
         >
-         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-black/60 via-transparent/50 to-transparent/0 rounded-lg"></div>
+          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-black/60 via-transparent/50 to-transparent/0 rounded-lg"></div>
 
           {/* Profile Details Section - Positioned at Bottom */}
           <div className="absolute bottom-0 w-full p-4 text-white text-left flex flex-col bg-gradient-to-t from-black via-transparent to-transparent rounded-b-lg">
@@ -221,32 +221,34 @@ const DigitalCard = () => {
             <h3 class="text-black mb-1">Address</h3>
             <p class="text-gray-700">{profile.address}</p>
           </div>
-          <button
-            className="bg-[#ad6c26] text-white px-4 py-2 rounded flex items-center gap-2"
-            onClick={() =>
-              window.open(
-                `https://www.google.com/maps/dir/?api=1&destination=${profile.googleMap}`,
-                "_blank"
-              )
-            }
-            rel="noreferrer noopener"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+          <div className="w-full bg-white p-4">
+            <button
+              className="bg-[#ad6c26] text-white px-4 py-2 rounded flex items-center justify-center gap-2 w-full max-w-sm mx-auto sm:px-6 sm:py-3 sm:text-base"
+              onClick={() =>
+                window.open(
+                  `https://www.google.com/maps/dir/?api=1&destination=${profile.googleMap}`,
+                  "_blank"
+                )
+              }
+              rel="noreferrer noopener"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"
-              />
-            </svg>
-            Direction
-          </button>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"
+                />
+              </svg>
+              Direction
+            </button>
+          </div>
         </div>
       </div>
 
@@ -540,7 +542,9 @@ const DigitalCard = () => {
           <div className="rounded-lg overflow-hidden">
             <iframe
               className="w-full h-64"
-              src={`https://www.google.com/maps/place/${profile.googleMap}`}
+              src={`https://www.google.com/maps/embed/v1/place?key=YOUR_API_KEY&q=${encodeURIComponent(
+                profile.googleMap
+              )}`}
               allowFullScreen
               aria-hidden="false"
               title={`Map of ${profile.googleMap}`}
