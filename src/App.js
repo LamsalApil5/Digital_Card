@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -10,13 +10,10 @@ import DigitalCard from "./components/DigitalCard";
 import { auth } from "./firebase";
 import Header from "./components/Header";
 import ForgotPassword from "./components/ForgotPassword";
-import Footer from "./components/Footer";
 import AppLoader from "./components/AppLoader";
 import Company from "./components/company";
-
 function App() {
   const [user, setUser] = useState(null);
-
   useEffect(() => {
     // On initial load, check if user data exists in localStorage or from auth state
     const storedUserUID = localStorage.getItem("userUID");
@@ -38,16 +35,10 @@ function App() {
     return () => unsubscribe();
   }, []);
 
-  const handleLogout = async () => {
-    await auth.signOut();
-    setUser(null);
-    localStorage.removeItem("userUID");
-  };
-
   return (
     <Router>
       <div className="bg-white min-h-screen">
-        {user && <Header user={user} handleLogout={handleLogout} />}
+        {user && <Header user={user} />}
         <div>
           <AppLoader />
         </div>
@@ -84,7 +75,6 @@ function App() {
           </div>
         </div>
 
-        {user && <Footer />}
       </div>
     </Router>
   );

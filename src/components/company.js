@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { ref, set, push } from "firebase/database";
+import { ref, set, push, query, orderByChild, equalTo, get } from "firebase/database";
 import { auth, database } from "../firebase";
 import { toast } from "react-toastify";
 import { createUserWithEmailAndPassword } from "firebase/auth";
@@ -14,6 +14,8 @@ const Company = () => {
   const [logo, setLogo] = useState(null);
   const [logoBase64, setLogoBase64] = useState("");
   const [loading, setLoading] = useState(false); // Loading state
+  const [searchResults, setSearchResults] = useState([]);
+  const [selectedCompanyId, setSelectedCompanyId] = useState(null); // Selected company ID
   const navigate = useNavigate();
 
   const convertToBase64 = (file) => {
@@ -32,35 +34,67 @@ const Company = () => {
     }
   };
 
+  // Autocomplete search logic
+  const handleCompanySearch = async (input) => {
+    setCompanyName(input);
+    if (input.length < 2) {
+      setSearchResults([]);
+      return;
+    }
+
+    const companiesRef = query(ref(database, "companies"));
+    const snapshot = await get(companiesRef);
+
+    if (snapshot.exists()) {
+      const filteredResults = [];
+      snapshot.forEach((childSnapshot) => {
+        const data = childSnapshot.val();
+        if (data.companyName.toLowerCase().includes(input.toLowerCase())) {
+          filteredResults.push({ id: childSnapshot.key, ...data });
+        }
+      });
+      setSearchResults(filteredResults);
+    } else {
+      setSearchResults([]);
+    }
+  };
+
+  const handleCompanySelection = (company) => {
+    setCompanyName(company.companyName);
+    setLogoBase64(company.logo || "");
+    setSelectedCompanyId(company.Id);
+    setSearchResults([]); // Clear search results
+  };
+
   const handleCompanyCreation = async () => {
-    if (!companyName || !logoBase64) {
-      toast.error("Please provide both a company name and logo.");
+    if (!companyName || (!logoBase64 && !selectedCompanyId)) {
+      toast.error("Please provide a company name and logo or select an existing company.");
       return;
     }
 
     setLoading(true); // Start loading
 
     try {
-      
-      // Create a company entry in Firebase Realtime Database
-      const companyRef = push(ref(database, "companies"));
-      const companyId = companyRef.key;
-      
-      // Store company data in Firebase Database
-      await set(companyRef, {
-        Id: companyId,
-        companyName,
-        logo: logoBase64,
-        createdBy: email,
-      });
-      
+      let companyId = selectedCompanyId;
+
+      if (!companyId) {
+        // Create a new company if none is selected
+        const companyRef = push(ref(database, "companies"));
+        companyId = companyRef.key;
+
+        await set(companyRef, {
+          Id: companyId,
+          companyName,
+          logo: logoBase64 || "",
+          isManuallyEntered: true, // Mark as manually entered
+          createdAt: new Date().toISOString(),
+        });
+      }
+
       // Create a new user in Firebase Auth with the email and password
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
+
       // Save user data in Firebase Database
       const userRef = ref(database, "users/" + user.uid);
       await set(userRef, {
@@ -69,7 +103,7 @@ const Company = () => {
         companyId,
         createdAt: new Date().toISOString(),
       });
-      // Redirect to login page after success
+
       setLoading(false); // Stop loading
       navigate("/login"); // Go to login page
       toast.success("Company and user created successfully!");
@@ -86,7 +120,7 @@ const Company = () => {
       <div className="max-w-sm w-full p-6 bg-white shadow-md rounded-lg">
         <h2 className="text-2xl font-bold mb-4">Create Company</h2>
 
-        <div className="mb-4">
+        <div className="mb-4 relative">
           <label
             htmlFor="companyName"
             className="block text-sm font-medium text-gray-700"
@@ -97,10 +131,24 @@ const Company = () => {
             id="companyName"
             type="text"
             value={companyName}
-            onChange={(e) => setCompanyName(e.target.value)}
+            onChange={(e) => handleCompanySearch(e.target.value)}
             className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
             required
           />
+          {/* Autocomplete Dropdown */}
+          {searchResults.length > 0 && (
+            <div className="absolute z-10 bg-white hover:bg-gray-100 border border-gray-500 rounded-md w-full mt-1">
+              {searchResults.map((company) => (
+                <div
+                  key={company.id}
+                  className="px-4 py-2 cursor-pointer hover:bg-gray-200"
+                  onClick={() => handleCompanySelection(company)}
+                >
+                  {company.companyName}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="mb-4">
@@ -117,7 +165,7 @@ const Company = () => {
             className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
             accept="image/*"
           />
-          {logo && (
+          {logoBase64 && (
             <div className="mt-2">
               <img
                 src={logoBase64}
