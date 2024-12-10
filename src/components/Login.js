@@ -22,6 +22,7 @@ const Login = () => {
       await signInWithEmailAndPassword(auth, email, password);
       toast.success('Login successful!');
       // Navigate to the profile page upon successful login
+      
       navigate('/profile');
     } catch (error) {
       toast.error('Invalid email or password.');

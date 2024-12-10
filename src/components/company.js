@@ -69,9 +69,6 @@ const Company = () => {
         companyId,
         createdAt: new Date().toISOString(),
       });
-
-      await auth.signOut();
-      localStorage.removeItem("userUID");
       // Redirect to login page after success
       setLoading(false); // Stop loading
       navigate("/login"); // Go to login page
