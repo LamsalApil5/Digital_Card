@@ -1,7 +1,4 @@
 import React, { useState } from "react";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { set, ref } from "firebase/database";
-import { auth, database } from "../firebase";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 const Signup = () => {
@@ -10,30 +7,20 @@ const Signup = () => {
   const navigate = useNavigate();
 
   const handleSignup = async () => {
+    if (!email || !password) {
+      toast.error("Please enter both email and password.");
+      return;
+    }
     try {
-      // Create the user with email and password
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      const user = userCredential.user;
-
-      // Store user data in Realtime Database
-      const userRef = ref(database, "users/" + user.uid);
-      await set(userRef, {
-        email: user.email,
-        uid: user.uid,
-        createdAt: new Date().toISOString(),
+      navigate(`/company`, {
+        state: { email, password },
       });
-
-      navigate(`/company/${user.uid}`);
     } catch (error) {
-      // Show error message in a popup
-      toast.error("Enter email and password.");
-      console.log("Error creating user: " + error.message);
+      toast.error("Something went wrong!");
+      console.error("Error: ", error);
     }
   };
+  
 
   return (
     <div className="flex items-center justify-center h-screen">
