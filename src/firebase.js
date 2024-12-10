@@ -3,15 +3,16 @@ import { getAuth } from 'firebase/auth';
 import { getDatabase } from 'firebase/database';
 
 const firebaseConfig = {
-    apiKey: "AIzaSyAdi36CBeH_4Atzfz4wsOl5VQ0UtbBY5nw",
-    authDomain: "businesscardprofile.firebaseapp.com",
-    databaseURL: "https://businesscardprofile-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "businesscardprofile",
-    storageBucket: "businesscardprofile.firebasestorage.app",
-    messagingSenderId: "896787454690",
-    appId: "1:896787454690:web:6eff0bce8cfd15be3b1cbb",
-    measurementId: "G-RPM4XW9G6G"
+  apiKey: "AIzaSyDFbCCQCFp7seRYlbD5JY8at5Eopn70zjQ",
+  authDomain: "digital-card-aa016.firebaseapp.com",
+  databaseURL: "https://digital-card-aa016-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "digital-card-aa016",
+  storageBucket: "digital-card-aa016.firebasestorage.app",
+  messagingSenderId: "333033985151",
+  appId: "1:333033985151:web:6b38d4d74a8b9cfb741b4a",
+  measurementId: "G-GXQDW2H9VC"
   };
+  
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
