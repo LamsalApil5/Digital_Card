@@ -17,9 +17,11 @@ import Header from "./components/Header"; // Import the Header component
 import ForgotPassword from "./components/ForgotPassword";
 import Footer from "./components/Footer";
 import AppLoader from "./components/AppLoader";
+import Company from "./components/company"; // Ensure Company component is imported
+
 function App() {
   const [user, setUser] = useState(null); // `null` for initial loading state
- 
+
   useEffect(() => {
     // Try to get the user UID from localStorage
     const storedUserUID = localStorage.getItem("userUID");
@@ -38,13 +40,10 @@ function App() {
         localStorage.removeItem("userUID");
         setUser(null); // Set user state to null
       }
-
-       });
+    });
 
     return () => unsubscribe(); // Cleanup subscription on unmount
   }, []);
-
-  
 
   const handleLogout = async () => {
     await auth.signOut();
@@ -52,17 +51,14 @@ function App() {
     localStorage.removeItem("userUID"); // Ensure we remove the UID from localStorage on logout
   };
 
- 
-
   return (
-    
     <Router>
       <div className="bg-white min-h-screen">
         {/* Conditionally render Header only if the user is logged in */}
         {user && <Header user={user} handleLogout={handleLogout} />}
         <div>
-      <AppLoader />
-    </div>
+          <AppLoader />
+        </div>
         {/* Main Content */}
         <div className="">
           <div className="auth-inner">
@@ -78,6 +74,8 @@ function App() {
                 element={user ? <Navigate to={`/profile`} /> : <Login />}
               />
               <Route path="/signup" element={<SignUp />} />
+              {/* After signup, redirect to /company/:userUID */}
+              <Route path="/company/:userUID" element={<Company />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
 
               <Route

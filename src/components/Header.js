@@ -1,12 +1,47 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import companyLogo from "../companylogo.png";
+import { ref, get } from "firebase/database"; // Import Firebase methods
+import companyLogo from "../companylogo.png"; // Default logo
+import { database } from "../firebase";
 
 function Header({ user, handleLogout }) {
+  const [companyLogoUrl, setCompanyLogoUrl] = useState(companyLogo); // Default logo
+  const [companyName, setCompanyName] = useState("");
+  const [currentUser, setCurrentUser] = useState(user || null);
+
   // Get the userUID from localStorage if user is not provided
   const storedUserUID = localStorage.getItem("userUID");
-  const currentUser =
-    user || storedUserUID ? { uid: storedUserUID, email: user?.email } : null;
+
+  useEffect(() => {
+    const userId = storedUserUID || currentUser?.uid; 
+    if (userId) {
+      const fetchUserData = async () => {
+        try {
+          debugger
+          // Fetch user data from Firebase Realtime Database
+          const userRef = ref(database, "users/" + userId); // Corrected Firebase path
+          const userSnapshot = await get(userRef);
+          const userData = userSnapshot.val();
+
+          if (userData && userData.companyId) {
+            const companyRef = ref(database, "companies/" + userData.companyId); // Corrected Firebase path
+            const companySnapshot = await get(companyRef);
+            const companyData = companySnapshot.val();
+            
+            // Set company logo and name
+            if (companyData) {
+              setCompanyLogoUrl(companyData.logo || companyLogo); // Default logo if none found
+              setCompanyName(companyData.companyName || "Multi Dynamic"); // Default name if none found
+            }
+          }
+        } catch (error) {
+          console.error("Error fetching data from Firebase:", error);
+        }
+      };
+
+      fetchUserData();
+    }
+  }, [storedUserUID, currentUser?.uid]); // Adding currentUser to dependency array for re-fetching when it changes
 
   // State for toggling the mobile menu
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -24,8 +59,8 @@ function Header({ user, handleLogout }) {
           className="text-lg font-bold hover:underline"
         >
           <img
-            src={companyLogo}
-            alt="Company logo for Multi Dynamic"
+            src={companyLogoUrl} // Set company logo from Firebase
+            alt={`Company logo for ${companyName || "Multi Dynamic"}`} // Use company name as fallback
             className="h-10 sm:h-12 max-h-12"
           />
         </Link>
@@ -35,8 +70,7 @@ function Header({ user, handleLogout }) {
           onClick={toggleMenu}
           className="block lg:hidden focus:outline-none"
         >
-          <span className="text-white text-3xl">&#9776;</span>{" "}
-          {/* Hamburger icon */}
+          <span className="text-white text-3xl">&#9776;</span> {/* Hamburger icon */}
         </button>
 
         {/* Desktop Menu */}

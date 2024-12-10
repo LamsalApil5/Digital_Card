@@ -21,11 +21,11 @@ const DigitalCard = () => {
         return;
       }
 
-      const userRef = ref(database, `users/${userUID}`);
+      const userRef = ref(database, `profiles/${userUID}`);
       try {
         const snapshot = await get(userRef);
         if (snapshot.exists()) {
-          setProfile(snapshot.val().profile || {});
+          setProfile(snapshot.val() || {});
         } else {
           console.error("User profile not found");
           setProfile(null);

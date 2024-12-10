@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { ref, get, set } from "firebase/database";
-import { database } from "../firebase";
+import { database } from "../firebase"; // Adjust the path to your Firebase configuration
 import { FaLinkedin, FaTwitter, FaInstagram } from "react-icons/fa";
 import { toast } from "react-toastify";
 
@@ -27,42 +27,37 @@ const ProfilePage = () => {
     website: "",
     reaProfile: "",
   });
-  const [profileSetupComplete, setProfileSetupComplete] = useState(false);
   const [locationData, setLocationData] = useState(null); // Store full JSON data for selected location
   const [searchResults, setSearchResults] = useState([]); // Store search results for dropdown
   const [prevSearch, setPrevSearch] = useState(""); // Store previous search value
 
-  // Handle search and update dropdown based on input
   const handleSearch = (searchValue) => {
-    // Only update the input if the search value is not the same as the previous one
     if (searchValue.trim() && searchValue !== prevSearch) {
-      setGoogleMap(searchValue); // Update the input value in the state
-      setPrevSearch(searchValue); // Update previous search value
+      setGoogleMap(searchValue);
+      setPrevSearch(searchValue);
 
-      // Fetch location data from the Nominatim API
       fetch(
         `https://nominatim.openstreetmap.org/search?format=json&q=${searchValue}&addressdetails=1&limit=5`
       )
         .then((response) => response.json())
         .then((data) => {
           if (data.length > 0) {
-            setSearchResults(data); // Populate dropdown with results
+            setSearchResults(data);
           } else {
-            setSearchResults([]); // Clear dropdown if no results
+            setSearchResults([]);
           }
         })
         .catch((error) => {
           console.error("Error fetching location data:", error);
-          setSearchResults([]); // Clear dropdown on error
+          setSearchResults([]);
         });
     }
   };
 
-  // Handle selection from dropdown
   const handleSelectLocation = (location) => {
-    setGoogleMap(location.display_name); // Set the input field with the selected address (name)
-    setLocationData(location); // Store the full JSON data for the selected location
-    setSearchResults([]); // Clear dropdown after selection
+    setGoogleMap(location.display_name);
+    setLocationData(location);
+    setSearchResults([]);
   };
 
   useEffect(() => {
@@ -70,13 +65,12 @@ const ProfilePage = () => {
       const storedUserUID = localStorage.getItem("userUID");
 
       if (storedUserUID) {
-        const userRef = ref(database, "users/" + storedUserUID);
+        const userRef = ref(database, "profiles/" + storedUserUID);
 
         try {
           const snapshot = await get(userRef);
           if (snapshot.exists()) {
-            const userData = snapshot.val();
-            const profile = userData.profile || {};
+            const profile = snapshot.val();
 
             setFirstName(profile.firstName || "");
             setMiddleName(profile.middleName || "");
@@ -86,7 +80,7 @@ const ProfilePage = () => {
             setContactPhone(profile.contactPhone || "");
             setContactTelphone(profile.contactTelphone || "");
             setProfilePicture(profile.profilePicture || "");
-            setCompanyName(profile.companyName|| "");
+            setCompanyName(profile.companyName || "");
             setGoogleMap(profile.googleMap || "");
             setDateOfBirth(profile.dateOfBirth || "");
             setAddress(profile.address || "");
@@ -102,7 +96,6 @@ const ProfilePage = () => {
                 reaProfile: "",
               }
             );
-            setProfileSetupComplete(userData.profileSetupComplete || false);
           }
         } catch (error) {
           console.error("Error fetching data:", error);
@@ -115,47 +108,31 @@ const ProfilePage = () => {
 
   const handleSave = async () => {
     const storedUserUID = localStorage.getItem("userUID");
-
     if (storedUserUID) {
-      const userRef = ref(database, "users/" + storedUserUID);
-      console.log(userRef);
-
+      const userRef = ref(database, "profiles/" + storedUserUID);
       try {
-        // Get the current user data to fetch the email
-        const snapshot = await get(userRef);
-        const userData = snapshot.val();
-
-        if (userData) {
+        
           await set(userRef, {
-            email: userData.email,
-            uid: storedUserUID,
-            createdAt: userData.createdAt,
-            profileSetupComplete: true,
-            profile: {
-              firstName,
-              middleName,
-              lastName,
-              jobTitle,
-              contactEmail,
-              contactPhone,
-              contactTelphone,
-              profilePicture,
-              companyName,
-              googleMap,
-              dateOfBirth,
-              address,
-              socialLinks,
-            },
+            userId: storedUserUID,
+            firstName,
+            middleName,
+            lastName,
+            jobTitle,
+            contactEmail,
+            contactPhone,
+            contactTelphone,
+            profilePicture,
+            companyName,
+            googleMap,
+            dateOfBirth,
+            address,
+            socialLinks,
           });
-
-          setProfileSetupComplete(true);
-          toast.success("Profile updated successfully!");
-        } else {
-          toast.error("User not found. Please log in again.");
-        }
+          toast.success("Profile created successfully!");
+       
       } catch (error) {
-        toast.error("Failed to update profile. Please try again.");
-        console.error("Error updating profile:", error);
+        toast.error("Failed to save profile. Please try again.");
+        console.error("Error saving profile:", error);
       }
     } else {
       toast.error("User not logged in. Please log in first.");
@@ -179,7 +156,6 @@ const ProfilePage = () => {
       reader.readAsDataURL(file);
     }
   };
-
   //const profileURL = `${window.location.origin}/digitalCard/${localStorage.getItem('userUID')}`;
 
   return (
@@ -194,7 +170,9 @@ const ProfilePage = () => {
               className="w-24 h-24 rounded-full object-cover mb-4"
             />
           )}
-          <h2 className="text-2xl font-semibold">{firstName} {middleName} {lastName}</h2>
+          <h2 className="text-2xl font-semibold">
+            {firstName} {middleName} {lastName}
+          </h2>
           <p className="text-gray-500">{jobTitle}</p>
           <div className="flex space-x-4 mt-4">
             {socialLinks.linkedin && (
@@ -524,8 +502,8 @@ const ProfilePage = () => {
                   }
                 />
               </div>
-               {/* facebook */}
-               <div className="mb-4">
+              {/* facebook */}
+              <div className="mb-4">
                 <label
                   htmlFor="facebook"
                   className="block text-sm font-medium text-gray-700"
