@@ -4,17 +4,18 @@ import { ref, set, push } from "firebase/database";
 import { auth, database } from "../firebase";
 import { toast } from "react-toastify";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import AppLoader from "./AppLoader"; // Assuming you have a loader component
 
 const Company = () => {
-  const location = useLocation(); // Retrieves the state passed via navigate
-  const { email, password } = location.state || {}; // Extract email and password from state
+  const location = useLocation();
+  const { email, password } = location.state || {};
 
   const [companyName, setCompanyName] = useState("");
   const [logo, setLogo] = useState(null);
   const [logoBase64, setLogoBase64] = useState("");
+  const [loading, setLoading] = useState(false); // Loading state
   const navigate = useNavigate();
 
-  // Convert logo image to base64
   const convertToBase64 = (file) => {
     const reader = new FileReader();
     reader.onloadend = () => {
@@ -23,7 +24,6 @@ const Company = () => {
     reader.readAsDataURL(file);
   };
 
-  // Handle file input change for logo
   const handleLogoChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -37,24 +37,30 @@ const Company = () => {
       toast.error("Please provide both a company name and logo.");
       return;
     }
-  
+
+    setLoading(true); // Start loading
+
     try {
-      // Create a new user in Firebase Auth with the email and password
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-  
+      
       // Create a company entry in Firebase Realtime Database
       const companyRef = push(ref(database, "companies"));
       const companyId = companyRef.key;
-  
+      
       // Store company data in Firebase Database
       await set(companyRef, {
         Id: companyId,
         companyName,
         logo: logoBase64,
-        createdBy: email, // Associate the company with the creator's email
+        createdBy: email,
       });
-  
+      
+      // Create a new user in Firebase Auth with the email and password
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = userCredential.user;
       // Save user data in Firebase Database
       const userRef = ref(database, "users/" + user.uid);
       await set(userRef, {
@@ -63,20 +69,24 @@ const Company = () => {
         companyId,
         createdAt: new Date().toISOString(),
       });
-  
+
+      await auth.signOut();
+      localStorage.removeItem("userUID");
+      // Redirect to login page after success
+      setLoading(false); // Stop loading
+      navigate("/login"); // Go to login page
       toast.success("Company and user created successfully!");
-      // Navigate to profile page after success
-      navigate("/profile");  // Assuming '/profile' is the correct route
     } catch (error) {
+      setLoading(false); // Stop loading
       console.error("Error creating company:", error);
       toast.error("Error creating company. Please try again.");
     }
   };
-  
 
   return (
     <div className="flex items-center justify-center h-screen">
-      <div className="max-w-md w-full p-6 bg-white shadow-md rounded-lg">
+      {loading && <AppLoader />} {/* Show loader while loading */}
+      <div className="max-w-sm w-full p-6 bg-white shadow-md rounded-lg">
         <h2 className="text-2xl font-bold mb-4">Create Company</h2>
 
         <div className="mb-4">
@@ -112,7 +122,11 @@ const Company = () => {
           />
           {logo && (
             <div className="mt-2">
-              <img src={logoBase64} alt="Logo Preview" className="w-20 h-20 object-cover" />
+              <img
+                src={logoBase64}
+                alt="Logo Preview"
+                className="w-20 h-20 object-cover"
+              />
             </div>
           )}
         </div>

@@ -18,19 +18,11 @@ function App() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    // On initial load, check if user data exists in localStorage or from auth state
-    const storedUserUID = localStorage.getItem("userUID");
-
-    if (storedUserUID) {
-      setUser({ uid: storedUserUID });
-    }
-
+    // Listen for Firebase Auth state changes
     const unsubscribe = auth.onAuthStateChanged((currentUser) => {
       if (currentUser) {
-        localStorage.setItem("userUID", currentUser.uid);
         setUser({ uid: currentUser.uid, email: currentUser.email });
       } else {
-        localStorage.removeItem("userUID");
         setUser(null);
       }
     });
@@ -41,7 +33,6 @@ function App() {
   const handleLogout = async () => {
     await auth.signOut();
     setUser(null);
-    localStorage.removeItem("userUID");
   };
 
   return (
