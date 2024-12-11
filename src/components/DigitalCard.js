@@ -155,7 +155,7 @@ const DigitalCard = () => {
 
   return (
     <div className="min-h-screen bg-orange-100 pt-10 pb-20 text-white ">
-      <div className="section relative text-center mb-8 w-full max-w-sm mx-auto rounded-lg shadow-xl">
+      <div className="section relative text-center mb-8 w-full max-w-sm mx-auto rounded-lg mt-5 shadow-xl">
         {/* Background Image Section */}
         <div
           className="bg-center bg-cover bg-no-repeat w-full min-h-[35rem] sm:min-h-[25rem] md:min-h-[30rem] rounded-lg relative"
