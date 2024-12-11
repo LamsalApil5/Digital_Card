@@ -141,7 +141,6 @@ const DigitalCard = () => {
   if (!profile) {
     return (
       <div className="flex justify-center items-center h-screen text-xl">
-        No profile data available.
       </div>
     );
   }
