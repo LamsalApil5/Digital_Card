@@ -63,21 +63,21 @@ const ProfilePage = () => {
   useEffect(() => {
     const fetchData = async () => {
       const storedUserUID = localStorage.getItem("userUID");
-  
+
       if (storedUserUID) {
         // Step 1: Fetch user data from the 'users' table
-        const userRef = ref(database, "users/" + storedUserUID);  // Corrected reference to 'users/{userUID}'
+        const userRef = ref(database, "users/" + storedUserUID); // Corrected reference to 'users/{userUID}'
         const userSnapshot = await get(userRef);
-        
+
         if (userSnapshot.exists()) {
           const user = userSnapshot.val();
           const companyId = user.companyId;
-  
+          setContactEmail(user.contactEmail || "");
           if (companyId) {
             // Step 2: Fetch company data using the companyId
-            const companyRef = ref(database, "companies/" + companyId);  // Corrected reference to 'companies/{companyId}'
+            const companyRef = ref(database, "companies/" + companyId); // Corrected reference to 'companies/{companyId}'
             const companySnapshot = await get(companyRef);
-  
+
             if (companySnapshot.exists()) {
               const company = companySnapshot.val();
               setCompanyName(company.companyName || "");
@@ -85,19 +85,18 @@ const ProfilePage = () => {
               console.error("Company not found");
               setCompanyName(""); // Optionally set an empty string or handle gracefully
             }
-  
+
             // Step 3: Fetch profile data after successfully fetching the company
             const profileRef = ref(database, "profiles/" + storedUserUID);
             try {
               const profileSnapshot = await get(profileRef);
               if (profileSnapshot.exists()) {
                 const profile = profileSnapshot.val();
-                
+
                 setFirstName(profile.firstName || "");
                 setMiddleName(profile.middleName || "");
                 setlastName(profile.lastName || "");
                 setJobTitle(profile.jobTitle || "");
-                setContactEmail(profile.contactEmail || "");
                 setContactPhone(profile.contactPhone || "");
                 setContactTelphone(profile.contactTelphone || "");
                 setProfilePicture(profile.profilePicture || "");
@@ -132,10 +131,10 @@ const ProfilePage = () => {
         console.error("No userUID found in localStorage");
       }
     };
-  
+
     fetchData();
   }, []);
-  
+
   const handleSave = async () => {
     const storedUserUID = localStorage.getItem("userUID");
     if (storedUserUID) {
@@ -378,6 +377,7 @@ const ProfilePage = () => {
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg mt-2"
                 value={contactEmail}
                 onChange={(e) => setContactEmail(e.target.value)}
+                disabled
               />
             </div>
             {/* Phone Number */}
