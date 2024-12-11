@@ -72,7 +72,7 @@ const ProfilePage = () => {
         if (userSnapshot.exists()) {
           const user = userSnapshot.val();
           const companyId = user.companyId;
-          setContactEmail(user.contactEmail || "");
+          setContactEmail(user.email || "");
           if (companyId) {
             // Step 2: Fetch company data using the companyId
             const companyRef = ref(database, "companies/" + companyId); // Corrected reference to 'companies/{companyId}'
