@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { ref, get, orderByChild, equalTo, query } from "firebase/database";
+import { ref, get, query } from "firebase/database";
 import { database } from "../firebase";
 import { FaPhoneSquare, FaQrcode } from "react-icons/fa";
 import { QRCodeCanvas } from "qrcode.react";
