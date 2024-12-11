@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { ref, get } from "firebase/database";
+import { ref, get, orderByChild, equalTo, query } from "firebase/database";
 import { database } from "../firebase";
 import { FaPhoneSquare, FaQrcode } from "react-icons/fa";
 import { QRCodeCanvas } from "qrcode.react";
@@ -8,37 +8,81 @@ import { useParams } from "react-router-dom";
 import manImage from "../man.png";
 
 const DigitalCard = () => {
-  const { userUID } = useParams();
+  const { companyName, userName } = useParams();
   const [profile, setProfile] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const [firstName, setFirstName] = useState("");
+  const [middleName, setMiddleName] = useState("");
+  const [lastName, setLastName] = useState("");
+
   useEffect(() => {
-    const fetchUserProfile = async () => {
-      if (!userUID) {
-        console.error("No userUID found in URL");
+    // Parse the userName only when it changes or on initial mount
+    const nameParts = userName.split("-");
+
+    if (nameParts.length === 3) {
+      setFirstName(nameParts[0]);
+      setMiddleName(nameParts[1]);
+      setLastName(nameParts[2]);
+    } else if (nameParts.length === 2) {
+      setFirstName(nameParts[0]);
+      setMiddleName(""); // No middle name
+      setLastName(nameParts[1]);
+    } else if (nameParts.length === 1) {
+      setFirstName(nameParts[0]);
+      setMiddleName(""); // No middle name
+      setLastName(""); // No last name
+    } else {
+      console.error("Invalid userName format");
+    }
+  }, [userName]); // Only run when userName changes
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (!companyName && !firstName) {
+        console.error("Invalid URL parameters");
         setIsLoading(false);
         return;
       }
-
-      const userRef = ref(database, `profiles/${userUID}`);
+  
       try {
-        const snapshot = await get(userRef);
-        if (snapshot.exists()) {
-          setProfile(snapshot.val() || {});
+        // Step 2: Fetch profile from the profiles table
+        const profilesRef = ref(database, "profiles");
+        const profileQuery = query(profilesRef);
+        const profileSnapshot = await get(profileQuery);
+  
+        if (profileSnapshot.exists()) {
+          const profiles = Object.values(profileSnapshot.val());          
+          const matchedProfile = profiles.find(
+            (p) =>
+              p.firstName === firstName &&
+              (p.middleName || "") === (middleName || "") &&
+              p.lastName === lastName &&
+              p.companyName === companyName
+          );
+          
+          if (matchedProfile) {
+            setProfile(matchedProfile);
+          } else {
+            setProfile(null);
+          }
         } else {
-          console.error("User profile not found");
+          console.error("No profiles found for the company");
           setProfile(null);
         }
+        
       } catch (error) {
-        console.error("Error fetching user profile:", error);
+        console.error("Error fetching data:", error);
+        setProfile(null);
       } finally {
         setIsLoading(false);
       }
     };
-
-    fetchUserProfile();
-  }, [userUID]);
+  
+    fetchProfile();
+  }, [companyName, userName, firstName, middleName, lastName]);
+  
 
   if (isLoading) {
     return (
@@ -101,7 +145,13 @@ const DigitalCard = () => {
       </div>
     );
   }
-  const profileURL = `${window.location.origin}/digitalCard/${userUID}`;
+  // Build the URL with dynamic parameters
+  const middleNameSegment = middleName ? middleName : ""; // Keep empty string if no middleName
+  const profileURL = `${
+    window.location.origin
+  }/digitalCard/${companyName}/${firstName}-${
+    middleNameSegment ? middleNameSegment + "-" : ""
+  }${lastName}`;
 
   return (
     <div className="min-h-screen bg-orange-100 pt-10 pb-20 text-white ">
@@ -208,59 +258,60 @@ const DigitalCard = () => {
           <span class="text-lg  text-black">Contact Me</span>
         </div>
 
-        <div class="space-y-6">
-        {(profile.contactTelphone || profile.contactPhone) && (
-          <div>
-            <h3 class="text-black mb-1">Call Me</h3>
-            {profile.contactTelphone ? (
-              <p className="text-gray-700">
-                {profile.contactPhone} +{profile.contactTelphone}
-              </p>
-            ) : (
-              <p className="text-gray-700">{profile.contactPhone}</p>
-            )}
-          </div>)}
+        <div className="space-y-6">
+          {(profile.contactTelphone || profile.contactPhone) && (
+            <div>
+              <h3 class="text-black mb-1">Call Me</h3>
+              {profile.contactTelphone ? (
+                <p className="text-gray-700">
+                  {profile.contactPhone} +{profile.contactTelphone}
+                </p>
+              ) : (
+                <p className="text-gray-700">{profile.contactPhone}</p>
+              )}
+            </div>
+          )}
           {profile.contactEmail && (
             <div>
-              <h3 class="text-black mb-1">Email</h3>
-              <p class="text-gray-700">{profile.contactEmail}</p>
+              <h3 className="text-black mb-1">Email</h3>
+              <p className="text-gray-700">{profile.contactEmail}</p>
             </div>
           )}
           {profile.address && (
-          <div>
-            <h3 class="text-black mb-1">Address</h3>
-            <p class="text-gray-700">{profile.address}</p>
-          </div>
+            <div>
+              <h3 class="text-black mb-1">Address</h3>
+              <p class="text-gray-700">{profile.address}</p>
+            </div>
           )}
           {profile.googleMap && (
-          <div className="w-full bg-white p-4">
-            <button
-              className="bg-[#ad6c26] text-white px-4 py-2 rounded flex items-center justify-center gap-2 w-full max-w-sm mx-auto sm:px-6 sm:py-3 sm:text-base"
-              onClick={() =>
-                window.open(
-                  `https://www.google.com/maps/dir/?api=1&destination=${profile.googleMap}`,
-                  "_blank"
-                )
-              }
-              rel="noreferrer noopener"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
+            <div className="w-full bg-white p-4">
+              <button
+                className="bg-[#ad6c26] text-white px-4 py-2 rounded flex items-center justify-center gap-2 w-full max-w-sm mx-auto sm:px-6 sm:py-3 sm:text-base"
+                onClick={() =>
+                  window.open(
+                    `https://www.google.com/maps/dir/?api=1&destination=${profile.googleMap}`,
+                    "_blank"
+                  )
+                }
+                rel="noreferrer noopener"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"
-                />
-              </svg>
-              Direction
-            </button>
-          </div>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"
+                  />
+                </svg>
+                Direction
+              </button>
+            </div>
           )}
         </div>
       </div>

@@ -63,73 +63,101 @@ const ProfilePage = () => {
   useEffect(() => {
     const fetchData = async () => {
       const storedUserUID = localStorage.getItem("userUID");
-
+  
       if (storedUserUID) {
-        const userRef = ref(database, "profiles/" + storedUserUID);
-
-        try {
-          const snapshot = await get(userRef);
-          if (snapshot.exists()) {
-            const profile = snapshot.val();
-
-            setFirstName(profile.firstName || "");
-            setMiddleName(profile.middleName || "");
-            setlastName(profile.lastName || "");
-            setJobTitle(profile.jobTitle || "");
-            setContactEmail(profile.contactEmail || "");
-            setContactPhone(profile.contactPhone || "");
-            setContactTelphone(profile.contactTelphone || "");
-            setProfilePicture(profile.profilePicture || "");
-            setCompanyName(profile.companyName || "");
-            setGoogleMap(profile.googleMap || "");
-            setDateOfBirth(profile.dateOfBirth || "");
-            setAddress(profile.address || "");
-            setSocialLinks(
-              profile.socialLinks || {
-                linkedin: "",
-                twitter: "",
-                instagram: "",
-                facebook: "",
-                github: "",
-                youtube: "",
-                website: "",
-                reaProfile: "",
+        // Step 1: Fetch user data from the 'users' table
+        const userRef = ref(database, "users/" + storedUserUID);  // Corrected reference to 'users/{userUID}'
+        const userSnapshot = await get(userRef);
+        
+        if (userSnapshot.exists()) {
+          const user = userSnapshot.val();
+          const companyId = user.companyId;
+  
+          if (companyId) {
+            // Step 2: Fetch company data using the companyId
+            const companyRef = ref(database, "companies/" + companyId);  // Corrected reference to 'companies/{companyId}'
+            const companySnapshot = await get(companyRef);
+  
+            if (companySnapshot.exists()) {
+              const company = companySnapshot.val();
+              setCompanyName(company.companyName || "");
+            } else {
+              console.error("Company not found");
+              setCompanyName(""); // Optionally set an empty string or handle gracefully
+            }
+  
+            // Step 3: Fetch profile data after successfully fetching the company
+            const profileRef = ref(database, "profiles/" + storedUserUID);
+            try {
+              const profileSnapshot = await get(profileRef);
+              if (profileSnapshot.exists()) {
+                const profile = profileSnapshot.val();
+                
+                setFirstName(profile.firstName || "");
+                setMiddleName(profile.middleName || "");
+                setlastName(profile.lastName || "");
+                setJobTitle(profile.jobTitle || "");
+                setContactEmail(profile.contactEmail || "");
+                setContactPhone(profile.contactPhone || "");
+                setContactTelphone(profile.contactTelphone || "");
+                setProfilePicture(profile.profilePicture || "");
+                setGoogleMap(profile.googleMap || "");
+                setDateOfBirth(profile.dateOfBirth || "");
+                setAddress(profile.address || "");
+                setSocialLinks(
+                  profile.socialLinks || {
+                    linkedin: "",
+                    twitter: "",
+                    instagram: "",
+                    facebook: "",
+                    github: "",
+                    youtube: "",
+                    website: "",
+                    reaProfile: "",
+                  }
+                );
+              } else {
+                console.error("Profile not found");
               }
-            );
+            } catch (error) {
+              console.error("Error fetching profile data:", error);
+            }
+          } else {
+            console.error("Company ID not found in user data");
           }
-        } catch (error) {
-          console.error("Error fetching data:", error);
+        } else {
+          console.error("User not found");
         }
+      } else {
+        console.error("No userUID found in localStorage");
       }
     };
-
+  
     fetchData();
   }, []);
-
+  
   const handleSave = async () => {
     const storedUserUID = localStorage.getItem("userUID");
     if (storedUserUID) {
       const userRef = ref(database, "profiles/" + storedUserUID);
       try {
-        
-          await set(userRef, {
-            userId: storedUserUID,
-            firstName,
-            middleName,
-            lastName,
-            jobTitle,
-            contactEmail,
-            contactPhone,
-            contactTelphone,
-            profilePicture,
-            companyName,
-            googleMap,
-            dateOfBirth,
-            address,
-            socialLinks,
-          });
-          toast.success("Profile created successfully!");
-       
+        await set(userRef, {
+          userId: storedUserUID,
+          firstName,
+          middleName,
+          lastName,
+          jobTitle,
+          contactEmail,
+          contactPhone,
+          contactTelphone,
+          profilePicture,
+          companyName,
+          googleMap,
+          dateOfBirth,
+          address,
+          socialLinks,
+        });
+        toast.success("Profile created successfully!");
       } catch (error) {
         toast.error("Failed to save profile. Please try again.");
         console.error("Error saving profile:", error);
@@ -213,7 +241,13 @@ const ProfilePage = () => {
               onClick={() => {
                 const userId = localStorage.getItem("userUID");
                 if (userId) {
-                  window.open(`/digitalCard/${userId}`, "_blank");
+                  const middleNameSegment = middleName ? middleName : ""; // Keep empty string if no middleName
+                  const fullName = `${firstName}-${
+                    middleNameSegment ? middleNameSegment + "-" : ""
+                  }${lastName}`;
+
+                  const url = `/digitalCard/${companyName}/${fullName}`;
+                  window.open(url, "_blank");
                 } else {
                   console.log("UserId not found in localStorage");
                 }
@@ -311,6 +345,7 @@ const ProfilePage = () => {
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg mt-2"
                 value={companyName}
                 onChange={(e) => setCompanyName(e.target.value)}
+                disabled
               />
             </div>
             {/* Job Title */}

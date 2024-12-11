@@ -59,7 +59,8 @@ function App() {
               <Route path="/company" element={<Company />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/profile" element={user ? <Profile /> : <Navigate to="/login" />} />
-              <Route path="/digitalCard/:userUID" element={<DigitalCard />} />
+              <Route path="/digitalCard/:companyName/:userName" element={<DigitalCard />} />
+
             </Routes>
             <ToastContainer
               position="bottom-right"
